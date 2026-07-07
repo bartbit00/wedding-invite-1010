@@ -339,7 +339,7 @@
   .acc-item{margin-bottom:12px;}
   .acc-item.open .chev{transform:rotate(180deg);}
   .acc-body{max-height:0; overflow:hidden; transition:max-height .4s ease;}
-  .acc-item.open .acc-body{max-height:600px;}
+  .acc-item.open .acc-body{max-height:1400px;}
   .acc-body-inner{padding:16px 4px 4px;}
   .acct-row{
     display:flex; align-items:center; justify-content:space-between; padding:12px 14px;
@@ -349,6 +349,32 @@
   .acct-row .num{font-size:13px; letter-spacing:.3px;}
   .acct-row .btn{padding:7px 12px; font-size:11px;}
   .kakaopay-row{margin-top:10px;}
+
+  /* 크립토(디지털 자산) 마음 전하실 곳 */
+  .crypto-gift{
+    margin-top:14px; padding:18px 14px 16px; border:1px solid var(--line);
+    border-radius:8px; background:var(--bg-alt); text-align:center;
+  }
+  .crypto-gift .crypto-label{
+    font-family:var(--serif-kr); font-size:13px; color:var(--text-soft);
+    letter-spacing:1px; margin:0 0 14px;
+  }
+  .crypto-gift .crypto-qr{
+    width:190px; max-width:72%; margin:0 auto 12px; border-radius:10px; display:block;
+  }
+  .crypto-gift .crypto-net{
+    font-size:12px; color:var(--pink-deep); letter-spacing:.5px; margin:0 0 8px; font-weight:500;
+  }
+  .crypto-addr-row{
+    display:flex; align-items:center; gap:8px; justify-content:center;
+    background:#fff; border:1px solid var(--line); border-radius:6px; padding:8px 10px; margin:0 0 8px;
+  }
+  .crypto-addr{
+    font-family:var(--sans-kr); font-size:10.5px; color:var(--text); word-break:break-all;
+    line-height:1.45; text-align:left; flex:1;
+  }
+  .crypto-addr-row .btn{flex:0 0 auto; padding:6px 10px; font-size:11px;}
+  .crypto-warn{font-size:10.5px; color:var(--text-faint); margin:0; letter-spacing:.2px; line-height:1.6;}
 
   /* ================= 23. 방명록 ================= */
   .guestbook-write{display:flex; justify-content:flex-end; margin-bottom:18px;}
@@ -540,6 +566,17 @@
         <div class="acct-row">
           <div><p class="who">신랑측 어머니 [어머니 성함]</p><p class="num">[은행 000-0000-0000]</p></div>
           <button class="btn sm copy-acct-btn" data-acct="[은행 000-0000-0000]">복사</button>
+        </div>
+
+        <div class="crypto-gift">
+          <p class="crypto-label">디지털 자산으로 마음 전하실 곳</p>
+          <img class="crypto-qr" src="images/crypto-qr.jpg" alt="USDT (Ethereum ERC20) 지갑 주소 QR 코드">
+          <p class="crypto-net">USDT · Ethereum (ERC20)</p>
+          <div class="crypto-addr-row">
+            <span class="crypto-addr" id="cryptoAddr">0x3088d2724a32c107ade73ab659b82664272dc8e9</span>
+            <button class="btn sm copy-crypto-btn" data-addr="0x3088d2724a32c107ade73ab659b82664272dc8e9">복사</button>
+          </div>
+          <p class="crypto-warn">※ 이더리움(ERC20) 네트워크로만 보내주세요.</p>
         </div>
       </div>
     </div>
@@ -735,19 +772,41 @@
     fadeEls.forEach(function(el){ el.classList.add('in-view'); });
   }
 
-  /* 갤러리 */
-  var GALLERY_TOTAL = 29;
+  /* 갤러리 (웨딩 사진 28장 + 메인 사진 2장 = 30장, 3열 x 10줄) */
+  var GALLERY_INITIAL = 12;              // 처음 보여줄 장수 (4줄)
+  var galleryImgs = [];
+  for(var g=1; g<=28; g++){ galleryImgs.push('images/g' + pad2(g) + '.jpg'); }
+  galleryImgs.push('images/main1.jpg');  // 메인으로 쓰인 2장을 맨 끝에
+  galleryImgs.push('images/main2.jpg');
   var galleryGrid = document.getElementById('galleryGrid');
   var galleryMoreBtn = document.getElementById('galleryMoreBtn');
+  var galleryExpanded = false;
   if(galleryGrid){
     var galleryHtml = '';
-    for(var g=1; g<=GALLERY_TOTAL; g++){
-      var src = 'images/g' + pad2(g) + '.jpg';
-      galleryHtml += '<div class="g-item" data-src="'+src+'" data-idx="'+g+'">' +
-        '<img src="'+src+'" alt="갤러리 사진 '+g+'" loading="lazy"></div>';
-    }
+    galleryImgs.forEach(function(src, i){
+      var hidden = i >= GALLERY_INITIAL ? ' hidden-item' : '';
+      galleryHtml += '<div class="g-item'+hidden+'" data-src="'+src+'" data-idx="'+(i+1)+'">' +
+        '<img src="'+src+'" alt="갤러리 사진 '+(i+1)+'" loading="lazy"></div>';
+    });
     galleryGrid.innerHTML = galleryHtml;
-    if(galleryMoreBtn) galleryMoreBtn.style.display = 'none';
+    if(galleryMoreBtn){
+      if(galleryImgs.length <= GALLERY_INITIAL){
+        galleryMoreBtn.style.display = 'none';
+      } else {
+        galleryMoreBtn.addEventListener('click', function(){
+          galleryExpanded = !galleryExpanded;
+          var items = galleryGrid.querySelectorAll('.g-item');
+          for(var i=GALLERY_INITIAL; i<items.length; i++){
+            items[i].classList.toggle('hidden-item', !galleryExpanded);
+          }
+          galleryMoreBtn.textContent = galleryExpanded ? '접기 −' : '더보기 +';
+          if(!galleryExpanded){
+            var gsec = document.getElementById('gallery');
+            if(gsec) gsec.scrollIntoView({behavior:'smooth', block:'start'});
+          }
+        });
+      }
+    }
   }
 
   var lightbox = document.getElementById('lightbox');
@@ -825,6 +884,12 @@
     btn.addEventListener('click', function(e){
       e.stopPropagation();
       copyText(btn.getAttribute('data-acct'), '계좌번호가 복사되었습니다');
+    });
+  });
+  document.querySelectorAll('.copy-crypto-btn').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      copyText(btn.getAttribute('data-addr'), '지갑 주소가 복사되었습니다');
     });
   });
 
