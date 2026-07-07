@@ -156,19 +156,14 @@
   }
   #invite .parents-line b{font-weight:500;}
 
-  /* ================= 3. 연락하기 ================= */
-  .contact-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
-  .contact-card{
-    border:1px solid var(--line); border-radius:var(--radius); padding:18px 10px; text-align:center;
+  /* ================= 3. 이름 ================= */
+  .name-lines{display:grid; gap:18px;}
+  .name-card{
+    border:1px solid var(--line); border-radius:var(--radius); padding:22px 18px; text-align:center; background:#fff;
   }
-  .contact-card .role{font-size:11px; color:var(--text-faint); letter-spacing:1px; margin-bottom:4px;}
-  .contact-card .name{font-family:var(--serif-kr); font-size:16px; margin-bottom:12px;}
-  .contact-icons{display:flex; justify-content:center; gap:14px;}
-  .icon-btn{
-    width:34px; height:34px; border-radius:50%; border:1px solid var(--line);
-    display:flex; align-items:center; justify-content:center; background:#fff;
-  }
-  .icon-btn svg{width:15px; height:15px; stroke:var(--text-soft); fill:none;}
+  .name-card .role{font-size:11px; color:var(--text-faint); letter-spacing:2px; margin:0 0 8px;}
+  .name-card .line{font-family:var(--serif-kr); font-size:15px; color:var(--text-soft); line-height:2; margin:0;}
+  .name-card .line b{font-size:19px; color:var(--text); font-weight:500;}
 
   /* ================= 4. 프로필 카드 ================= */
   .profile-cards{display:flex; gap:14px;}
@@ -198,7 +193,7 @@
   /* ================= 6. 갤러리 ================= */
   .gallery-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:4px;}
   .gallery-grid .g-item{aspect-ratio:1/1; cursor:pointer; overflow:hidden;}
-  .gallery-grid .g-item .ph{width:100%; height:100%; aspect-ratio:auto; font-size:10px;}
+  .gallery-grid .g-item img{width:100%; height:100%; object-fit:cover;}
   .gallery-grid .g-item.hidden-item{display:none;}
   .gallery-more-wrap{text-align:center; margin-top:20px;}
 
@@ -208,7 +203,7 @@
   }
   #lightbox.open{display:flex;}
   #lightbox .lb-inner{width:100%; max-width:360px; position:relative;}
-  #lightbox .ph{aspect-ratio:3/4; width:100%; font-size:14px;}
+  #lightbox img{width:100%; max-height:82vh; object-fit:contain;}
   #lightbox .lb-close{
     position:absolute; top:-40px; right:0; color:#fff; font-size:26px; background:none; border:none; line-height:1;
   }
@@ -438,8 +433,7 @@
 <!-- 1. 커버 -->
 <!-- ============================================================ -->
 <section id="cover">
-  <!-- 실제 커버 사진 적용: cover.jpg -->
-  <div class="cover-photo" style="background-image:url('cover.jpg'); background-size:cover; background-position:center;"></div>
+  <div class="cover-photo" style="background-image:url('images/main1.jpg'); background-size:cover; background-position:center;"></div>
   <div class="cover-overlay"></div>
 
   <div class="cover-top">
@@ -463,127 +457,42 @@
 <!-- ============================================================ -->
 <section id="invite" class="section fade-section">
   <span class="eyebrow">Invitation</span>
-  <h2 class="section-title">초대합니다</h2>
+  <h2 class="section-title">모시는 글</h2>
   <div class="divider dot"></div>
 
   <p>두 사람이 사랑으로 만나 이제 하나의 가정을 이루려 합니다.</p>
   <p>귀한 걸음 하시어 축복해 주시면 더없는 기쁨으로 간직하겠습니다.</p>
 
   <div class="invite-photo">
-    <!-- 사진 교체 지점: 흑백 폴라로이드풍 커플컷 -->
     <figure class="ph-polaroid">
-      <div class="ph"><span class="ph-icon">&#9711;</span>PHOTO 02</div>
+      <img src="images/main2.jpg" alt="김서우 양은진" style="width:100%; aspect-ratio:3/4; object-fit:cover; filter:grayscale(1);">
       <figcaption>김서우 &amp; 양은진</figcaption>
     </figure>
   </div>
-
-  <p class="parents-line">
-    <b>[아버지 성함]</b> · <b>[어머니 성함]</b>의 아들 <b>김서우</b><br>
-    <b>[아버지 성함]</b> · <b>[어머니 성함]</b>의 딸 <b>양은진</b>
-  </p>
 </section>
 
 <!-- ============================================================ -->
-<!-- 3. 연락하기 -->
+<!-- 3. 이름 -->
 <!-- ============================================================ -->
-<section id="contact" class="section fade-section">
-  <span class="eyebrow">Contact</span>
-  <h2 class="section-title">연락하기</h2>
-  <div class="divider"></div>
-
-  <div class="contact-grid">
-    <div class="contact-card">
-      <p class="role">신랑</p>
-      <p class="name">김서우</p>
-      <div class="contact-icons">
-        <a class="icon-btn" href="tel:01000000000" aria-label="전화"><svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M4 4h4l2 6-3 2a12 12 0 006 6l2-3 6 2v4a2 2 0 01-2 2A16 16 0 014 6a2 2 0 012-2z"/></svg></a>
-        <a class="icon-btn" href="sms:01000000000" aria-label="문자"><svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M4 5h16v11H8l-4 4V5z"/></svg></a>
-        <a class="icon-btn" href="mailto:example@email.com" aria-label="이메일"><svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M3 5h18v14H3V5z"/><path d="M3 6l9 7 9-7"/></svg></a>
-      </div>
-    </div>
-    <div class="contact-card">
-      <p class="role">신부</p>
-      <p class="name">양은진</p>
-      <div class="contact-icons">
-        <a class="icon-btn" href="tel:01000000000" aria-label="전화"><svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M4 4h4l2 6-3 2a12 12 0 006 6l2-3 6 2v4a2 2 0 01-2 2A16 16 0 014 6a2 2 0 012-2z"/></svg></a>
-        <a class="icon-btn" href="sms:01000000000" aria-label="문자"><svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M4 5h16v11H8l-4 4V5z"/></svg></a>
-        <a class="icon-btn" href="mailto:example@email.com" aria-label="이메일"><svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M3 5h18v14H3V5z"/><path d="M3 6l9 7 9-7"/></svg></a>
-      </div>
-    </div>
-    <div class="contact-card">
-      <p class="role">신랑측 혼주</p>
-      <p class="name">[아버지/어머니]</p>
-      <div class="contact-icons">
-        <a class="icon-btn" href="tel:01000000000" aria-label="전화"><svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M4 4h4l2 6-3 2a12 12 0 006 6l2-3 6 2v4a2 2 0 01-2 2A16 16 0 014 6a2 2 0 012-2z"/></svg></a>
-        <a class="icon-btn" href="sms:01000000000" aria-label="문자"><svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M4 5h16v11H8l-4 4V5z"/></svg></a>
-        <a class="icon-btn" href="mailto:example@email.com" aria-label="이메일"><svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M3 5h18v14H3V5z"/><path d="M3 6l9 7 9-7"/></svg></a>
-      </div>
-    </div>
-    <div class="contact-card">
-      <p class="role">신부측 혼주</p>
-      <p class="name">[아버지/어머니]</p>
-      <div class="contact-icons">
-        <a class="icon-btn" href="tel:01000000000" aria-label="전화"><svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M4 4h4l2 6-3 2a12 12 0 006 6l2-3 6 2v4a2 2 0 01-2 2A16 16 0 014 6a2 2 0 012-2z"/></svg></a>
-        <a class="icon-btn" href="sms:01000000000" aria-label="문자"><svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M4 5h16v11H8l-4 4V5z"/></svg></a>
-        <a class="icon-btn" href="mailto:example@email.com" aria-label="이메일"><svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M3 5h18v14H3V5z"/><path d="M3 6l9 7 9-7"/></svg></a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================ -->
-<!-- 4. 신랑&신부 소개 카드 -->
-<!-- ============================================================ -->
-<section id="profile" class="section fade-section">
+<section id="names" class="section fade-section">
   <span class="eyebrow">Groom &amp; Bride</span>
-  <h2 class="section-title">신랑 &amp; 신부</h2>
+  <h2 class="section-title">이름</h2>
   <div class="divider"></div>
 
-  <div class="profile-cards">
-    <div class="profile-card">
-      <!-- 사진 교체 지점 -->
-      <div class="ph ph-vert"><span class="ph-icon">&#9711;</span>PHOTO 03<br>GROOM</div>
-      <p class="name-en">GROOM</p>
-      <p class="name-kr">김서우</p>
-      <p class="meta">19XX년생 · [MBTI]</p>
-      <p class="hashtags">#다정함 #계획형 #커피덕후</p>
+  <div class="name-lines">
+    <div class="name-card">
+      <p class="role">신랑</p>
+      <p class="line">[아버지 성함] · [어머니 성함] 의 아들<br><b>김서우</b></p>
     </div>
-    <div class="profile-card">
-      <!-- 사진 교체 지점 -->
-      <div class="ph ph-vert"><span class="ph-icon">&#9711;</span>PHOTO 04<br>BRIDE</div>
-      <p class="name-en">BRIDE</p>
-      <p class="name-kr">양은진</p>
-      <p class="meta">19XX년생 · [MBTI]</p>
-      <p class="hashtags">#밝음 #여행러버 #고양이집사</p>
+    <div class="name-card">
+      <p class="role">신부</p>
+      <p class="line">[아버지 성함] · [어머니 성함] 의 딸<br><b>양은진</b></p>
     </div>
   </div>
 </section>
 
 <!-- ============================================================ -->
-<!-- 5. Wedding Day 캘린더 + D-day -->
-<!-- ============================================================ -->
-<section id="calendar" class="section fade-section">
-  <span class="eyebrow">Wedding Day</span>
-  <h2 class="section-title">우리 결혼합니다</h2>
-  <div class="divider"></div>
-
-  <div class="cal-wrap">
-    <p class="cal-month" id="calMonthLabel">Loading...</p>
-    <div class="cal-grid" id="calGrid"><!-- JS로 렌더링 --></div>
-  </div>
-
-  <div class="dday-box" id="ddayBox">
-    <div class="unit"><div class="num" id="ddD">-</div><div class="lbl">DAYS</div></div>
-    <div class="unit"><div class="num" id="ddH">-</div><div class="lbl">HOUR</div></div>
-    <div class="unit"><div class="num" id="ddM">-</div><div class="lbl">MIN</div></div>
-    <div class="unit"><div class="num" id="ddS">-</div><div class="lbl">SEC</div></div>
-  </div>
-  <p class="dday-caption" id="ddayCaption">신랑 · 신부의 결혼식이 <b>D-DAY</b>일 남았습니다.</p>
-  <p class="together-days" id="togetherDays">함께한 지 &#9829; 0일</p>
-</section>
-
-<!-- ============================================================ -->
-<!-- 6. 갤러리 -->
+<!-- 4. 갤러리 -->
 <!-- ============================================================ -->
 <section id="gallery" class="section tight fade-section">
   <span class="eyebrow">Gallery</span>
@@ -601,36 +510,76 @@
 <div id="lightbox">
   <div class="lb-inner">
     <button class="lb-close" id="lbClose" aria-label="닫기">&times;</button>
-    <div class="ph" id="lbPhoto">PHOTO</div>
+    <img id="lbPhoto" src="" alt="확대 사진">
   </div>
 </div>
 
 <!-- ============================================================ -->
-<!-- 7. 동영상 -->
+<!-- 5. 마음 전하실 곳 (계좌) -->
 <!-- ============================================================ -->
-<section id="video" class="section tight fade-section">
-  <span class="eyebrow">Video</span>
-  <h2 class="section-title">동영상</h2>
-  <div class="divider"></div>
+<section id="accounts" class="section fade-section">
+  <span class="eyebrow">Gift Money</span>
+  <h2 class="section-title">마음 전하실 곳</h2>
+  <p class="section-desc">참석이 어려우신 분들을 위해<br>계좌번호를 안내드립니다.</p>
 
-  <!-- 유튜브 임베드 자리: 여기 iframe(youtube-nocookie.com) 삽입 -->
-  <div class="ph ph-wide video-ph">
-    <span class="ph-icon">&#9711;</span>VIDEO PLACEHOLDER<br>16:9 · YouTube embed 자리
-    <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+  <div class="acc-item" data-side="groom">
+    <div class="acc-header">
+      <span class="side">신랑측</span>
+      <span class="chev">▾</span>
+    </div>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <div class="acct-row">
+          <div><p class="who">신랑 김서우</p><p class="num">[은행 000-0000-0000]</p></div>
+          <button class="btn sm copy-acct-btn" data-acct="[은행 000-0000-0000]">복사</button>
+        </div>
+        <div class="acct-row">
+          <div><p class="who">신랑측 아버지 [아버지 성함]</p><p class="num">[은행 000-0000-0000]</p></div>
+          <button class="btn sm copy-acct-btn" data-acct="[은행 000-0000-0000]">복사</button>
+        </div>
+        <div class="acct-row">
+          <div><p class="who">신랑측 어머니 [어머니 성함]</p><p class="num">[은행 000-0000-0000]</p></div>
+          <button class="btn sm copy-acct-btn" data-acct="[은행 000-0000-0000]">복사</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="acc-item" data-side="bride">
+    <div class="acc-header">
+      <span class="side">신부측</span>
+      <span class="chev">▾</span>
+    </div>
+    <div class="acc-body">
+      <div class="acc-body-inner">
+        <div class="acct-row">
+          <div><p class="who">신부 양은진</p><p class="num">[은행 000-0000-0000]</p></div>
+          <button class="btn sm copy-acct-btn" data-acct="[은행 000-0000-0000]">복사</button>
+        </div>
+        <div class="acct-row">
+          <div><p class="who">신부측 아버지 [아버지 성함]</p><p class="num">[은행 000-0000-0000]</p></div>
+          <button class="btn sm copy-acct-btn" data-acct="[은행 000-0000-0000]">복사</button>
+        </div>
+        <div class="acct-row">
+          <div><p class="who">신부측 어머니 [어머니 성함]</p><p class="num">[은행 000-0000-0000]</p></div>
+          <button class="btn sm copy-acct-btn" data-acct="[은행 000-0000-0000]">복사</button>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- ============================================================ -->
-<!-- 8. 오시는 길 -->
+<!-- 6. 오시는 길 -->
 <!-- ============================================================ -->
 <section id="location" class="section fade-section">
   <span class="eyebrow">Location</span>
   <h2 class="section-title">오시는 길</h2>
   <div class="divider"></div>
 
-  <p class="venue-name">[예식장 이름] [홀 이름]</p>
-  <p class="venue-addr" id="venueAddr">[서울특별시 ○○구 ○○로 000]</p>
-  <p class="venue-tel">T. [02-000-0000]</p>
+  <p class="venue-name">[예식장]</p>
+  <p class="venue-addr" id="venueAddr">[주소]</p>
+  <p class="venue-tel">[시간]</p>
 
   <div class="copy-addr-row">
     <button class="btn sm" id="copyAddrBtn">주소 복사</button>
@@ -638,7 +587,7 @@
 
   <!-- 지도 임베드 자리: 여기 네이버/카카오 지도 iframe 또는 API 삽입 -->
   <div class="map-box">
-    <div class="ph"><span class="ph-icon">&#9711;</span>MAP<br>지도 임베드 자리 (Naver/Kakao Map)</div>
+    <div class="ph"><span class="ph-icon">&#9711;</span>MAP</div>
   </div>
 
   <div class="map-nav-row">
@@ -646,27 +595,10 @@
     <a class="btn sm block" href="#" onclick="return false;">카카오내비</a>
     <a class="btn sm block" href="#" onclick="return false;">티맵</a>
   </div>
-
-  <div class="transport-block">
-    <h4>지하철</h4>
-    <p>[○○역 ○번 출구 도보 5분 — 더미 안내 문구]</p>
-  </div>
-  <div class="transport-block">
-    <h4>버스</h4>
-    <p>[간선/지선 000, 000번 — ○○정류장 하차 — 더미 안내 문구]</p>
-  </div>
-  <div class="transport-block">
-    <h4>자가용</h4>
-    <p>[내비게이션에 예식장명 검색 — 더미 안내 문구]</p>
-  </div>
-  <div class="transport-block">
-    <h4>주차</h4>
-    <p>[건물 내 주차장 이용, 2시간 무료 — 더미 안내 문구]</p>
-  </div>
 </section>
 
 <!-- ============================================================ -->
-<!-- 9. 참석여부 (RSVP) -->
+<!-- 7. 참석여부 (RSVP) -->
 <!-- ============================================================ -->
 <section id="rsvp" class="section fade-section" style="text-align:center;">
   <span class="eyebrow">RSVP</span>
@@ -714,371 +646,6 @@
 </div>
 
 <!-- ============================================================ -->
-<!-- 10. 하객 사진·영상 공유 -->
-<!-- ============================================================ -->
-<section id="share-photos" class="section tight fade-section info-line-block">
-  <span class="eyebrow">Share</span>
-  <h2 class="section-title">하객 사진·영상 공유</h2>
-  <p>결혼식 당일 촬영해주신 사진과 영상을<br>아래 공간에서 함께 모아볼 수 있어요.</p>
-  <button class="btn sm">사진·영상 공유하기</button>
-</section>
-
-<!-- ============================================================ -->
-<!-- 11. 리마인더 알림 -->
-<!-- ============================================================ -->
-<section id="reminder" class="section tight fade-section info-line-block">
-  <span class="eyebrow">Reminder</span>
-  <h2 class="section-title">리마인더 알림</h2>
-  <p>예식 전날, 잊지 않도록<br>알림을 보내드릴게요.</p>
-  <button class="btn sm">알림 신청하기</button>
-</section>
-
-<!-- ============================================================ -->
-<!-- 12. 생중계 -->
-<!-- ============================================================ -->
-<section id="livestream" class="section tight fade-section info-line-block">
-  <span class="eyebrow">Live Streaming</span>
-  <h2 class="section-title">생중계 안내</h2>
-  <p>참석이 어려우신 분들을 위해<br>온라인 생중계를 준비했습니다.</p>
-  <div class="btn-row">
-    <button class="btn sm">생중계 바로가기</button>
-    <button class="btn sm">알림 받기</button>
-  </div>
-</section>
-
-<!-- ============================================================ -->
-<!-- 13. 주차 안내 -->
-<!-- ============================================================ -->
-<section id="parking" class="section tight fade-section info-line-block">
-  <span class="eyebrow">Parking</span>
-  <h2 class="section-title">주차 안내</h2>
-  <!-- 사진 교체 지점 -->
-  <div class="ph ph-wide"><span class="ph-icon">&#9711;</span>PHOTO 05 · 주차장 안내도</div>
-  <p>[건물 지하 1~3층 주차 가능, 2시간 무료 — 더미 안내 문구]</p>
-  <button class="btn sm">주차 상세 안내</button>
-</section>
-
-<!-- ============================================================ -->
-<!-- 14. 전세버스 -->
-<!-- ============================================================ -->
-<section id="shuttle" class="section tight fade-section info-line-block">
-  <span class="eyebrow">Shuttle Bus</span>
-  <h2 class="section-title">전세버스 안내</h2>
-  <!-- 사진 교체 지점 -->
-  <div class="ph ph-wide"><span class="ph-icon">&#9711;</span>PHOTO 06 · 전세버스</div>
-  <p>[○○역 앞 O시 O분 출발 — 더미 안내 문구]</p>
-  <button class="btn sm">탑승 신청하기</button>
-</section>
-
-<!-- ============================================================ -->
-<!-- 15. 안내사항 (탭) -->
-<!-- ============================================================ -->
-<section id="info-tabs" class="section fade-section">
-  <span class="eyebrow">Information</span>
-  <h2 class="section-title">안내사항</h2>
-  <div class="divider"></div>
-
-  <div class="tab-btns" id="infoTabBtns">
-    <button class="active" data-tab="meal">식사</button>
-    <button data-tab="place">장소</button>
-    <button data-tab="ceremony">예식</button>
-  </div>
-
-  <div class="tab-panel active" id="tab-meal">
-    <!-- 사진 교체 지점 -->
-    <div class="ph ph-wide"><span class="ph-icon">&#9711;</span>PHOTO 07 · 식사 공간</div>
-    <p>[뷔페 / 코스 요리 등 식사 형태 — 더미 안내 문구]</p>
-    <div class="btn-row"><button class="btn sm">식사 안내 자세히</button></div>
-  </div>
-  <div class="tab-panel" id="tab-place">
-    <!-- 사진 교체 지점 -->
-    <div class="ph ph-wide"><span class="ph-icon">&#9711;</span>PHOTO 08 · 예식 홀</div>
-    <p>[○층 ○○홀, 좌석 안내 — 더미 안내 문구]</p>
-    <div class="btn-row"><button class="btn sm">장소 안내 자세히</button></div>
-  </div>
-  <div class="tab-panel" id="tab-ceremony">
-    <!-- 사진 교체 지점 -->
-    <div class="ph ph-wide"><span class="ph-icon">&#9711;</span>PHOTO 09 · 예식 진행</div>
-    <p>[예식 진행 순서, 소요시간 — 더미 안내 문구]</p>
-    <div class="btn-row"><button class="btn sm">예식 순서 보기</button></div>
-  </div>
-</section>
-
-<!-- ============================================================ -->
-<!-- 16. 신랑&신부 장문 소개 -->
-<!-- ============================================================ -->
-<section id="long-intro" class="section fade-section">
-  <span class="eyebrow">About Us</span>
-  <h2 class="section-title">신랑 &amp; 신부 이야기</h2>
-  <div class="divider"></div>
-
-  <div class="long-intro-block">
-    <!-- 사진 교체 지점 -->
-    <div class="ph ph-vert"><span class="ph-icon">&#9711;</span>PHOTO 10 · GROOM</div>
-    <p class="who">GROOM</p>
-    <p class="name">김서우</p>
-    <p>[자기소개 더미 문장 1행 — 예: 안녕하세요, 신랑 [신랑이름]입니다.]<br>
-    [자기소개 더미 문장 2행]<br>
-    [자기소개 더미 문장 3행]<br>
-    [자기소개 더미 문장 4행]<br>
-    [자기소개 더미 문장 5행 — 예: 좋은 남편이 되겠습니다.]</p>
-  </div>
-
-  <div class="long-intro-block">
-    <!-- 사진 교체 지점 -->
-    <div class="ph ph-vert"><span class="ph-icon">&#9711;</span>PHOTO 11 · BRIDE</div>
-    <p class="who">BRIDE</p>
-    <p class="name">양은진</p>
-    <p>[자기소개 더미 문장 1행 — 예: 안녕하세요, 신부 [신부이름]입니다.]<br>
-    [자기소개 더미 문장 2행]<br>
-    [자기소개 더미 문장 3행]<br>
-    [자기소개 더미 문장 4행]<br>
-    [자기소개 더미 문장 5행 — 예: 좋은 아내가 되겠습니다.]</p>
-  </div>
-</section>
-
-<!-- ============================================================ -->
-<!-- 17. 부모님 소개 -->
-<!-- ============================================================ -->
-<section id="parents" class="section fade-section">
-  <span class="eyebrow">Parents</span>
-  <h2 class="section-title">부모님 소개</h2>
-  <div class="divider"></div>
-
-  <div class="parents-grid">
-    <div class="p-card">
-      <div class="ph ph-square"><span class="ph-icon">&#9711;</span>PHOTO 12</div>
-      <p class="name">신랑 아버지 [성함]</p>
-    </div>
-    <div class="p-card">
-      <div class="ph ph-square"><span class="ph-icon">&#9711;</span>PHOTO 13</div>
-      <p class="name">신랑 어머니 [성함]</p>
-    </div>
-    <div class="p-card">
-      <div class="ph ph-square"><span class="ph-icon">&#9711;</span>PHOTO 14</div>
-      <p class="name">신부 아버지 [성함]</p>
-    </div>
-    <div class="p-card">
-      <div class="ph ph-square"><span class="ph-icon">&#9711;</span>PHOTO 15</div>
-      <p class="name">신부 어머니 [성함]</p>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================ -->
-<!-- 18. 타임라인 -->
-<!-- ============================================================ -->
-<section id="timeline" class="section fade-section">
-  <span class="eyebrow">Our Timeline</span>
-  <h2 class="section-title">타임라인</h2>
-  <div class="divider"></div>
-
-  <div class="timeline">
-    <div class="tl-item">
-      <div class="tl-photo"><div class="ph ph-square"><span class="ph-icon">&#9711;</span>16</div></div>
-      <div class="tl-text"><p class="date">YYYY.MM</p><p class="caption">[첫 만남 — 더미 캡션]</p></div>
-    </div>
-    <div class="tl-item right">
-      <div class="tl-photo"><div class="ph ph-square"><span class="ph-icon">&#9711;</span>17</div></div>
-      <div class="tl-text"><p class="date">YYYY.MM</p><p class="caption">[첫 데이트 — 더미 캡션]</p></div>
-    </div>
-    <div class="tl-item">
-      <div class="tl-photo"><div class="ph ph-square"><span class="ph-icon">&#9711;</span>18</div></div>
-      <div class="tl-text"><p class="date">YYYY.MM</p><p class="caption">[첫 여행 — 더미 캡션]</p></div>
-    </div>
-    <div class="tl-item right">
-      <div class="tl-photo"><div class="ph ph-square"><span class="ph-icon">&#9711;</span>19</div></div>
-      <div class="tl-text"><p class="date">YYYY.MM</p><p class="caption">[동거 시작 — 더미 캡션]</p></div>
-    </div>
-    <div class="tl-item">
-      <div class="tl-photo"><div class="ph ph-square"><span class="ph-icon">&#9711;</span>20</div></div>
-      <div class="tl-text"><p class="date">YYYY.MM</p><p class="caption">[프러포즈 — 더미 캡션]</p></div>
-    </div>
-    <div class="tl-item right">
-      <div class="tl-photo"><div class="ph ph-square"><span class="ph-icon">&#9711;</span>21</div></div>
-      <div class="tl-text"><p class="date">YYYY.MM</p><p class="caption">[상견례 — 더미 캡션]</p></div>
-    </div>
-    <div class="tl-item">
-      <div class="tl-photo"><div class="ph ph-square"><span class="ph-icon">&#9711;</span>22</div></div>
-      <div class="tl-text"><p class="date">YYYY.MM</p><p class="caption">[웨딩촬영 — 더미 캡션]</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================ -->
-<!-- 19. 우리의 이야기 -->
-<!-- ============================================================ -->
-<section id="our-story" class="section fade-section">
-  <span class="eyebrow">Our Story</span>
-  <h2 class="section-title">우리의 이야기</h2>
-  <div class="divider"></div>
-
-  <div class="story-photo">
-    <!-- 사진 교체 지점 -->
-    <div class="ph ph-vert"><span class="ph-icon">&#9711;</span>PHOTO 23</div>
-  </div>
-  <p class="story-sub">[소제목 — 예: 우연이 인연이 되기까지]</p>
-
-  <div class="collapse-block" id="storyCollapse">
-    <p>[서사 더미 문장 1행 — 예: 처음 만난 그날, 우리는 서로를 알아보지 못했습니다.]</p>
-    <p>[서사 더미 문장 2행]</p>
-    <p>[서사 더미 문장 3행]</p>
-    <p>[서사 더미 문장 4행]</p>
-    <p>[서사 더미 문장 5행]</p>
-    <p>[서사 더미 문장 6행 — 예: 그렇게 우리는 서로의 반쪽이 되었습니다.]</p>
-  </div>
-  <button class="more-toggle" data-target="storyCollapse">더보기 +</button>
-</section>
-
-<!-- ============================================================ -->
-<!-- 20. 인터뷰 -->
-<!-- ============================================================ -->
-<section id="interview" class="section fade-section">
-  <span class="eyebrow">Interview</span>
-  <h2 class="section-title">인터뷰</h2>
-  <div class="divider"></div>
-
-  <div class="collapse-block" id="interviewCollapse" style="max-height:220px;">
-    <div class="qa-block">
-      <p class="q">신랑에게, 결혼을 결심한 이유는?</p>
-      <p class="a">[더미 답변 1행]<br>[더미 답변 2행]<br>[더미 답변 3행]<br>[더미 답변 4행]</p>
-    </div>
-    <div class="qa-block">
-      <p class="q">신부에게, 신랑의 첫인상은?</p>
-      <p class="a">[더미 답변 1행]<br>[더미 답변 2행]<br>[더미 답변 3행]<br>[더미 답변 4행]</p>
-    </div>
-    <div class="qa-block">
-      <p class="q">신랑에게, 신부의 매력 포인트는?</p>
-      <p class="a">[더미 답변 1행]<br>[더미 답변 2행]<br>[더미 답변 3행]<br>[더미 답변 4행]</p>
-    </div>
-    <div class="qa-block">
-      <p class="q">두 사람에게, 앞으로의 다짐은?</p>
-      <p class="a">[더미 답변 1행]<br>[더미 답변 2행]<br>[더미 답변 3행]<br>[더미 답변 4행]</p>
-    </div>
-  </div>
-  <button class="more-toggle" data-target="interviewCollapse">더보기 +</button>
-</section>
-
-<!-- ============================================================ -->
-<!-- 21. 화환 사양 안내 -->
-<!-- ============================================================ -->
-<section id="wreath" class="section tight fade-section">
-  <p class="wreath-note">[화환은 정중히 사양합니다 — 마음만 감사히 받겠습니다 · 더미 문구]</p>
-</section>
-
-<!-- ============================================================ -->
-<!-- 22. 마음 전하실 곳 (계좌) -->
-<!-- ============================================================ -->
-<section id="accounts" class="section fade-section">
-  <span class="eyebrow">Gift Money</span>
-  <h2 class="section-title">마음 전하실 곳</h2>
-  <p class="section-desc">참석이 어려우신 분들을 위해<br>계좌번호를 안내드립니다.</p>
-
-  <div class="acc-item" data-side="groom">
-    <div class="acc-header">
-      <span class="side">신랑측</span>
-      <span class="chev">▾</span>
-    </div>
-    <div class="acc-body">
-      <div class="acc-body-inner">
-        <div class="acct-row">
-          <div><p class="who">신랑 김서우</p><p class="num">[은행 000-0000-0000]</p></div>
-          <button class="btn sm copy-acct-btn" data-acct="[은행 000-0000-0000 신랑이름]">복사</button>
-        </div>
-        <div class="acct-row">
-          <div><p class="who">신랑측 아버지 [성함]</p><p class="num">[은행 000-0000-0000]</p></div>
-          <button class="btn sm copy-acct-btn" data-acct="[은행 000-0000-0000 아버지]">복사</button>
-        </div>
-        <div class="acct-row">
-          <div><p class="who">신랑측 어머니 [성함]</p><p class="num">[은행 000-0000-0000]</p></div>
-          <button class="btn sm copy-acct-btn" data-acct="[은행 000-0000-0000 어머니]">복사</button>
-        </div>
-        <div class="kakaopay-row"><button class="btn yellow sm block">카카오페이로 보내기</button></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="acc-item" data-side="bride">
-    <div class="acc-header">
-      <span class="side">신부측</span>
-      <span class="chev">▾</span>
-    </div>
-    <div class="acc-body">
-      <div class="acc-body-inner">
-        <div class="acct-row">
-          <div><p class="who">신부 양은진</p><p class="num">[은행 000-0000-0000]</p></div>
-          <button class="btn sm copy-acct-btn" data-acct="[은행 000-0000-0000 신부이름]">복사</button>
-        </div>
-        <div class="acct-row">
-          <div><p class="who">신부측 아버지 [성함]</p><p class="num">[은행 000-0000-0000]</p></div>
-          <button class="btn sm copy-acct-btn" data-acct="[은행 000-0000-0000 아버지]">복사</button>
-        </div>
-        <div class="acct-row">
-          <div><p class="who">신부측 어머니 [성함]</p><p class="num">[은행 000-0000-0000]</p></div>
-          <button class="btn sm copy-acct-btn" data-acct="[은행 000-0000-0000 어머니]">복사</button>
-        </div>
-        <div class="kakaopay-row"><button class="btn yellow sm block">카카오페이로 보내기</button></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================ -->
-<!-- 23. 방명록 -->
-<!-- ============================================================ -->
-<section id="guestbook" class="section fade-section">
-  <span class="eyebrow">Guestbook</span>
-  <h2 class="section-title">방명록</h2>
-  <div class="divider"></div>
-
-  <div class="guestbook-write">
-    <button class="btn sm" id="gbWriteToggleBtn">글쓰기 +</button>
-  </div>
-
-  <!-- 실제 저장은 백엔드 연동 필요 (여기서는 화면에만 추가) -->
-  <form class="gb-write-form" id="gbWriteForm">
-    <input type="text" id="gbAuthor" placeholder="이름">
-    <textarea id="gbBody" placeholder="축하 메시지를 남겨주세요"></textarea>
-    <button type="submit" class="btn solid sm block">등록하기</button>
-  </form>
-
-  <div id="gbList">
-    <div class="gb-page active" data-page="1">
-      <div class="gb-entry"><div class="gb-top"><span class="author">[하객 A]</span><span class="time">YYYY.MM.DD</span></div><p class="body">[축하 더미 메시지 — 예: 결혼 진심으로 축하드립니다! 행복하세요.]</p></div>
-      <div class="gb-entry"><div class="gb-top"><span class="author">[하객 B]</span><span class="time">YYYY.MM.DD</span></div><p class="body">[축하 더미 메시지 — 예: 두 분 정말 잘 어울려요, 축하해요!]</p></div>
-    </div>
-    <div class="gb-page" data-page="2">
-      <div class="gb-entry"><div class="gb-top"><span class="author">[하객 C]</span><span class="time">YYYY.MM.DD</span></div><p class="body">[축하 더미 메시지 — 예: 오래오래 행복하게 사세요.]</p></div>
-      <div class="gb-entry"><div class="gb-top"><span class="author">[하객 D]</span><span class="time">YYYY.MM.DD</span></div><p class="body">[축하 더미 메시지 — 예: 결혼 축하하고 늘 응원할게요!]</p></div>
-    </div>
-  </div>
-
-  <div class="gb-pagination" id="gbPagination">
-    <button class="active" data-page="1">1</button>
-    <button data-page="2">2</button>
-  </div>
-</section>
-
-<!-- ============================================================ -->
-<!-- 24. 마무리 -->
-<!-- ============================================================ -->
-<section id="closing" class="section fade-section">
-  <!-- 사진 교체 지점: 흑백 커플컷 -->
-  <div class="closing-photo">
-    <div class="ph ph-full" style="margin:0 auto; max-width:220px;"><span class="ph-icon">&#9711;</span>PHOTO 24</div>
-  </div>
-  <p class="thanks">
-    [감사 문구 더미 — 예: 저희 두 사람의 새로운 시작을<br>
-    함께 축복해 주셔서 진심으로 감사드립니다.<br>
-    보내주신 따뜻한 마음 잊지 않고<br>
-    오래도록 행복하게 살겠습니다.]
-  </p>
-  <p class="signature">김서우 &amp; 양은진</p>
-  <button class="btn" id="closingShareBtn">공유하기</button>
-  <p class="copyright">&copy; 2026. 김서우 &amp; 양은진. All rights reserved.</p>
-</section>
-
-<!-- ============================================================ -->
 <!-- 하단 고정 바 -->
 <!-- ============================================================ -->
 <div class="bottom-bar">
@@ -1116,17 +683,43 @@
 (function(){
   "use strict";
 
-  /* ============ 0. 공통: 토스트 ============ */
   var toastEl = document.getElementById('toast');
   var toastTimer = null;
   function showToast(msg){
+    if(!toastEl) return;
     toastEl.textContent = msg;
     toastEl.classList.add('show');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, 2000);
   }
 
-  /* ============ 1. 스크롤 페이드인 (IntersectionObserver) ============ */
+  function pad2(n){ return String(n).padStart(2,'0'); }
+
+  function copyText(text, successMsg){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){
+        showToast(successMsg);
+      }).catch(function(){
+        fallbackCopy(text, successMsg);
+      });
+    } else {
+      fallbackCopy(text, successMsg);
+    }
+  }
+
+  function fallbackCopy(text, successMsg){
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try{ document.execCommand('copy'); showToast(successMsg); }
+    catch(e){ showToast('복사에 실패했습니다'); }
+    document.body.removeChild(ta);
+  }
+
   var fadeEls = document.querySelectorAll('.fade-section');
   if('IntersectionObserver' in window){
     var io = new IntersectionObserver(function(entries){
@@ -1142,181 +735,87 @@
     fadeEls.forEach(function(el){ el.classList.add('in-view'); });
   }
 
-  /* ============ 2. Wedding Day 캘린더 + D-day 카운트다운 ============ */
-  // 확정된 예식일 2026-10-10(토). 예식 시각 미정으로 00:00 기준
-  var WEDDING_DATE = new Date('2026-10-10T00:00:00+09:00');
-  // 더미 "함께한 지" 시작일 (실제 연애 시작일로 교체 필요)
-  var TOGETHER_START = new Date('2022-01-01T00:00:00+09:00');
-
-  var dowNames = ['일','월','화','수','목','금','토'];
-  function renderCalendar(){
-    var y = WEDDING_DATE.getFullYear(), m = WEDDING_DATE.getMonth();
-    document.getElementById('calMonthLabel').textContent =
-      WEDDING_DATE.toLocaleDateString('en-US',{month:'long'}).toUpperCase() + ' ' + y;
-
-    var grid = document.getElementById('calGrid');
-    var html = '';
-    dowNames.forEach(function(d){ html += '<div class="dow">'+d+'</div>'; });
-
-    var firstDow = new Date(y, m, 1).getDay();
-    var daysInMonth = new Date(y, m+1, 0).getDate();
-    var weddingDate = WEDDING_DATE.getDate();
-
-    for(var i=0;i<firstDow;i++){ html += '<div class="day blank"></div>'; }
-    for(var d=1; d<=daysInMonth; d++){
-      var cls = 'day' + (d===weddingDate ? ' the-day' : '');
-      html += '<div class="'+cls+'">'+d+'</div>';
-    }
-    grid.innerHTML = html;
-  }
-  renderCalendar();
-
-  function pad2(n){ return String(n).padStart(2,'0'); }
-  function updateCountdown(){
-    var now = new Date();
-    var diff = WEDDING_DATE.getTime() - now.getTime();
-    var ddD = document.getElementById('ddD'), ddH=document.getElementById('ddH'),
-        ddM = document.getElementById('ddM'), ddS=document.getElementById('ddS'),
-        cap = document.getElementById('ddayCaption');
-
-    if(diff <= 0){
-      ddD.textContent = ddH.textContent = ddM.textContent = ddS.textContent = '00';
-      cap.innerHTML = '두 사람의 결혼식이 진행되었습니다. <b>♥</b>';
-      return;
-    }
-    var totalSec = Math.floor(diff/1000);
-    var days = Math.floor(totalSec / 86400);
-    var hours = Math.floor((totalSec % 86400) / 3600);
-    var mins = Math.floor((totalSec % 3600) / 60);
-    var secs = totalSec % 60;
-
-    ddD.textContent = days;
-    ddH.textContent = pad2(hours);
-    ddM.textContent = pad2(mins);
-    ddS.textContent = pad2(secs);
-    cap.innerHTML = '신랑 · 신부의 결혼식이 <b>D-'+days+'</b>일 남았습니다.';
-  }
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
-
-  function updateTogetherDays(){
-    var now = new Date();
-    var diffDays = Math.floor((now - TOGETHER_START) / 86400000);
-    document.getElementById('togetherDays').innerHTML = '함께한 지 &#9829; ' + diffDays + '일';
-  }
-  updateTogetherDays();
-
-  /* ============ 3. 갤러리 (더보기 + 라이트박스) ============ */
-  var GALLERY_TOTAL = 18;
+  /* 갤러리 */
+  var GALLERY_TOTAL = 20;
   var galleryGrid = document.getElementById('galleryGrid');
-  var galleryHtml = '';
-  for(var g=1; g<=GALLERY_TOTAL; g++){
-    var hiddenCls = g > 9 ? ' hidden-item' : '';
-    galleryHtml += '<div class="g-item'+hiddenCls+'" data-idx="'+g+'">' +
-      '<div class="ph">IMG '+ pad2(g) +'</div></div>';
+  var galleryMoreBtn = document.getElementById('galleryMoreBtn');
+  if(galleryGrid){
+    var galleryHtml = '';
+    for(var g=1; g<=GALLERY_TOTAL; g++){
+      var src = 'images/g' + pad2(g) + '.jpg';
+      galleryHtml += '<div class="g-item" data-src="'+src+'" data-idx="'+g+'">' +
+        '<img src="'+src+'" alt="갤러리 사진 '+g+'" loading="lazy"></div>';
+    }
+    galleryGrid.innerHTML = galleryHtml;
+    if(galleryMoreBtn) galleryMoreBtn.style.display = 'none';
   }
-  galleryGrid.innerHTML = galleryHtml;
-
-  document.getElementById('galleryMoreBtn').addEventListener('click', function(){
-    document.querySelectorAll('.g-item.hidden-item').forEach(function(el){
-      el.classList.remove('hidden-item');
-    });
-    this.style.display = 'none';
-  });
 
   var lightbox = document.getElementById('lightbox');
   var lbPhoto = document.getElementById('lbPhoto');
-  galleryGrid.addEventListener('click', function(e){
-    var item = e.target.closest('.g-item');
-    if(!item) return;
-    lbPhoto.textContent = 'IMG ' + pad2(item.getAttribute('data-idx'));
-    lightbox.classList.add('open');
-  });
-  document.getElementById('lbClose').addEventListener('click', function(){
-    lightbox.classList.remove('open');
-  });
-  lightbox.addEventListener('click', function(e){
-    if(e.target === lightbox) lightbox.classList.remove('open');
-  });
-
-  /* ============ 4. 오시는 길: 주소 복사 + 지도 버튼 ============ */
-  function copyText(text, successMsg){
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(text).then(function(){
-        showToast(successMsg);
-      }).catch(function(){
-        fallbackCopy(text, successMsg);
+  if(galleryGrid && lightbox && lbPhoto){
+    galleryGrid.addEventListener('click', function(e){
+      var item = e.target.closest('.g-item');
+      if(!item) return;
+      lbPhoto.src = item.getAttribute('data-src');
+      lbPhoto.alt = '갤러리 확대 사진 ' + item.getAttribute('data-idx');
+      lightbox.classList.add('open');
+    });
+    var lbClose = document.getElementById('lbClose');
+    if(lbClose){
+      lbClose.addEventListener('click', function(){
+        lightbox.classList.remove('open');
+        lbPhoto.removeAttribute('src');
       });
-    } else {
-      fallbackCopy(text, successMsg);
     }
-  }
-  function fallbackCopy(text, successMsg){
-    var ta = document.createElement('textarea');
-    ta.value = text;
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.focus(); ta.select();
-    try{ document.execCommand('copy'); showToast(successMsg); }
-    catch(e){ showToast('복사에 실패했습니다'); }
-    document.body.removeChild(ta);
+    lightbox.addEventListener('click', function(e){
+      if(e.target === lightbox){
+        lightbox.classList.remove('open');
+        lbPhoto.removeAttribute('src');
+      }
+    });
   }
 
-  document.getElementById('copyAddrBtn').addEventListener('click', function(){
-    var addr = document.getElementById('venueAddr').textContent;
-    copyText(addr, '주소가 복사되었습니다');
-  });
+  /* 주소 복사 */
+  var copyAddrBtn = document.getElementById('copyAddrBtn');
+  if(copyAddrBtn){
+    copyAddrBtn.addEventListener('click', function(){
+      var venueAddr = document.getElementById('venueAddr');
+      var addr = venueAddr ? venueAddr.textContent : '';
+      copyText(addr, '주소가 복사되었습니다');
+    });
+  }
 
-  /* ============ 5. RSVP 모달 ============ */
+  /* RSVP 모달 */
   var rsvpModal = document.getElementById('rsvpModal');
-  document.getElementById('openRsvpBtn').addEventListener('click', function(){
-    rsvpModal.classList.add('open');
-  });
-  document.getElementById('rsvpCancelBtn').addEventListener('click', function(){
-    rsvpModal.classList.remove('open');
-  });
-  rsvpModal.addEventListener('click', function(e){
-    if(e.target === rsvpModal) rsvpModal.classList.remove('open');
-  });
-  document.getElementById('rsvpForm').addEventListener('submit', function(e){
-    e.preventDefault();
-    var attend = this.querySelector('input[name=attend]:checked').value;
-    var side = this.querySelector('input[name=side]:checked').value;
-    var name = document.getElementById('rsvpName').value || '(이름 미입력)';
-    var count = document.getElementById('rsvpCount').value || 1;
-    var companion = document.getElementById('rsvpCompanion').checked;
-
-    // 실제 연동 자리: 여기서 구글폼(Google Forms) 또는 구글시트(Apps Script Web App)로 POST 전송
-    // 예) fetch('https://script.google.com/macros/s/XXXX/exec', {method:'POST', body: JSON.stringify({attend, side, name, count, companion})})
-    console.log('[RSVP 제출 - 데모]', {attend:attend, side:side, name:name, count:count, companion:companion});
-
-    alert('참석여부가 접수되었습니다.\n(데모 화면입니다 — 실제 저장은 구글폼/시트 연동 후 동작합니다)\n\n참석: '+attend+'\n구분: '+side+'\n성함: '+name+'\n인원: '+count+'\n동행: '+(companion?'있음':'없음'));
-    rsvpModal.classList.remove('open');
-    this.reset();
-  });
-
-  /* ============ 6. 안내사항 탭 전환 ============ */
-  var tabBtns = document.querySelectorAll('#infoTabBtns button');
-  tabBtns.forEach(function(btn){
-    btn.addEventListener('click', function(){
-      tabBtns.forEach(function(b){ b.classList.remove('active'); });
-      document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
-      btn.classList.add('active');
-      document.getElementById('tab-' + btn.getAttribute('data-tab')).classList.add('active');
+  var openRsvpBtn = document.getElementById('openRsvpBtn');
+  var rsvpCancelBtn = document.getElementById('rsvpCancelBtn');
+  var rsvpForm = document.getElementById('rsvpForm');
+  if(rsvpModal && openRsvpBtn && rsvpCancelBtn && rsvpForm){
+    openRsvpBtn.addEventListener('click', function(){
+      rsvpModal.classList.add('open');
     });
-  });
-
-  /* ============ 7. 우리의 이야기 / 인터뷰 더보기-접기 ============ */
-  document.querySelectorAll('.more-toggle').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      var target = document.getElementById(btn.getAttribute('data-target'));
-      var expanded = target.classList.toggle('expanded');
-      btn.textContent = expanded ? '접기 -' : '더보기 +';
+    rsvpCancelBtn.addEventListener('click', function(){
+      rsvpModal.classList.remove('open');
     });
-  });
+    rsvpModal.addEventListener('click', function(e){
+      if(e.target === rsvpModal) rsvpModal.classList.remove('open');
+    });
+    rsvpForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var attend = this.querySelector('input[name=attend]:checked').value;
+      var side = this.querySelector('input[name=side]:checked').value;
+      var name = document.getElementById('rsvpName').value || '(이름 미입력)';
+      var count = document.getElementById('rsvpCount').value || 1;
+      var companion = document.getElementById('rsvpCompanion').checked;
 
-  /* ============ 8. 계좌 아코디언 + 복사 ============ */
+      console.log('[RSVP 제출 - 데모]', {attend:attend, side:side, name:name, count:count, companion:companion});
+      alert('참석여부가 접수되었습니다.\n(데모 화면입니다 - 실제 저장은 구글폼/시트 연동 후 동작합니다)\n\n참석: '+attend+'\n구분: '+side+'\n성함: '+name+'\n인원: '+count+'\n동행: '+(companion?'있음':'없음'));
+      rsvpModal.classList.remove('open');
+      this.reset();
+    });
+  }
+
+  /* 계좌 아코디언 + 복사 */
   document.querySelectorAll('.acc-header').forEach(function(header){
     header.addEventListener('click', function(){
       header.parentElement.classList.toggle('open');
@@ -1329,72 +828,32 @@
     });
   });
 
-  /* ============ 9. 방명록: 글쓰기 + 페이지네이션 ============ */
-  var gbWriteToggleBtn = document.getElementById('gbWriteToggleBtn');
-  var gbWriteForm = document.getElementById('gbWriteForm');
-  gbWriteToggleBtn.addEventListener('click', function(){
-    gbWriteForm.classList.toggle('open');
-  });
-  gbWriteForm.addEventListener('submit', function(e){
-    e.preventDefault();
-    var author = document.getElementById('gbAuthor').value.trim() || '익명';
-    var body = document.getElementById('gbBody').value.trim();
-    if(!body){ showToast('메시지를 입력해주세요'); return; }
-
-    // 실제 저장은 백엔드/DB 연동 필요 (여기서는 화면에만 추가되는 데모)
-    var firstPage = document.querySelector('.gb-page[data-page="1"]');
-    var entry = document.createElement('div');
-    entry.className = 'gb-entry';
-    var today = new Date();
-    var dateStr = today.getFullYear()+'.'+pad2(today.getMonth()+1)+'.'+pad2(today.getDate());
-    entry.innerHTML = '<div class="gb-top"><span class="author"></span><span class="time">'+dateStr+'</span></div><p class="body"></p>';
-    entry.querySelector('.author').textContent = author;
-    entry.querySelector('.body').textContent = body;
-    firstPage.insertBefore(entry, firstPage.firstChild);
-
-    this.reset();
-    gbWriteForm.classList.remove('open');
-    showToast('방명록이 등록되었습니다');
-  });
-
-  var gbPagination = document.getElementById('gbPagination');
-  gbPagination.addEventListener('click', function(e){
-    var btn = e.target.closest('button');
-    if(!btn) return;
-    var page = btn.getAttribute('data-page');
-    gbPagination.querySelectorAll('button').forEach(function(b){ b.classList.remove('active'); });
-    btn.classList.add('active');
-    document.querySelectorAll('.gb-page').forEach(function(p){
-      p.classList.toggle('active', p.getAttribute('data-page') === page);
-    });
-  });
-
-  /* ============ 10. 배경음악 토글 ============ */
-  // 실제 mp3 연결 시: <audio id="bgm"> 태그의 src를 채우면 아래 로직이 그대로 재생/일시정지를 제어합니다.
+  /* 배경음악 토글 */
   var musicBtn = document.getElementById('musicToggleBtn');
   var bgm = document.getElementById('bgm');
   var musicOn = false;
-  musicBtn.addEventListener('click', function(){
-    musicOn = !musicOn;
-    musicBtn.setAttribute('aria-pressed', String(musicOn));
-    if(!bgm.src){
-      // 연결된 음원이 없는 상태 — 아이콘/상태만 토글 (콘솔 에러 방지를 위해 play() 호출 생략)
-      showToast(musicOn ? '배경음악 On (음원 미연결 상태)' : '배경음악 Off');
-      return;
-    }
-    if(musicOn){
-      var p = bgm.play();
-      if(p && p.catch) p.catch(function(){ /* 자동재생 정책 등으로 실패해도 무시 */ });
-    } else {
-      bgm.pause();
-    }
-  });
+  if(musicBtn && bgm){
+    musicBtn.addEventListener('click', function(){
+      musicOn = !musicOn;
+      musicBtn.setAttribute('aria-pressed', String(musicOn));
+      if(!bgm.src){
+        showToast(musicOn ? '배경음악 On (음원 미연결 상태)' : '배경음악 Off');
+        return;
+      }
+      if(musicOn){
+        var p = bgm.play();
+        if(p && p.catch) p.catch(function(){});
+      } else {
+        bgm.pause();
+      }
+    });
+  }
 
-  /* ============ 11. 공유하기 ============ */
+  /* 공유하기 */
   function doShare(){
     var shareData = {
       title: '김서우 ♥ 양은진 결혼합니다',
-      text: 'October 10, 2026 · Saturday — 저희 두 사람의 결혼식에 초대합니다.',
+      text: 'October 10, 2026 · Saturday - 저희 두 사람의 결혼식에 초대합니다.',
       url: location.href
     };
     if(navigator.share){
@@ -1403,59 +862,45 @@
       copyText(location.href, '청첩장 링크가 복사되었습니다');
     }
   }
-  document.getElementById('shareBtn').addEventListener('click', doShare);
-  document.getElementById('closingShareBtn').addEventListener('click', doShare);
+  var shareBtn = document.getElementById('shareBtn');
+  if(shareBtn) shareBtn.addEventListener('click', doShare);
 
-  /* ============ 12. 목차 오버레이 ============ */
+  /* 목차 오버레이 */
   var navSections = [
-    {id:'cover', label:'커버'},
-    {id:'invite', label:'초대합니다'},
-    {id:'contact', label:'연락하기'},
-    {id:'profile', label:'신랑 & 신부'},
-    {id:'calendar', label:'Wedding Day'},
+    {id:'invite', label:'초대글'},
+    {id:'names', label:'이름'},
     {id:'gallery', label:'갤러리'},
-    {id:'video', label:'동영상'},
+    {id:'accounts', label:'계좌'},
     {id:'location', label:'오시는 길'},
-    {id:'rsvp', label:'참석여부'},
-    {id:'share-photos', label:'사진·영상 공유'},
-    {id:'reminder', label:'리마인더 알림'},
-    {id:'livestream', label:'생중계'},
-    {id:'parking', label:'주차 안내'},
-    {id:'shuttle', label:'전세버스'},
-    {id:'info-tabs', label:'안내사항'},
-    {id:'long-intro', label:'신랑 & 신부 이야기'},
-    {id:'parents', label:'부모님 소개'},
-    {id:'timeline', label:'타임라인'},
-    {id:'our-story', label:'우리의 이야기'},
-    {id:'interview', label:'인터뷰'},
-    {id:'wreath', label:'화환 안내'},
-    {id:'accounts', label:'마음 전하실 곳'},
-    {id:'guestbook', label:'방명록'},
-    {id:'closing', label:'마무리'}
+    {id:'rsvp', label:'참석여부'}
   ];
   var navList = document.getElementById('navList');
   var navHtml = '';
   navSections.forEach(function(s, i){
     navHtml += '<button data-target="'+s.id+'"><span class="idx">'+pad2(i+1)+'</span>'+s.label+'</button>';
   });
-  navList.innerHTML = navHtml;
+  if(navList) navList.innerHTML = navHtml;
 
   var navOverlay = document.getElementById('nav-overlay');
-  document.getElementById('navOpenBtn').addEventListener('click', function(){
-    navOverlay.classList.add('open');
-  });
-  document.getElementById('navCloseBtn').addEventListener('click', function(){
-    navOverlay.classList.remove('open');
-  });
-  navList.addEventListener('click', function(e){
-    var btn = e.target.closest('button');
-    if(!btn) return;
-    var target = document.getElementById(btn.getAttribute('data-target'));
-    navOverlay.classList.remove('open');
-    if(target){
-      setTimeout(function(){ target.scrollIntoView({behavior:'smooth', block:'start'}); }, 200);
-    }
-  });
+  var navOpenBtn = document.getElementById('navOpenBtn');
+  var navCloseBtn = document.getElementById('navCloseBtn');
+  if(navOverlay && navList && navOpenBtn && navCloseBtn){
+    navOpenBtn.addEventListener('click', function(){
+      navOverlay.classList.add('open');
+    });
+    navCloseBtn.addEventListener('click', function(){
+      navOverlay.classList.remove('open');
+    });
+    navList.addEventListener('click', function(e){
+      var btn = e.target.closest('button');
+      if(!btn) return;
+      var target = document.getElementById(btn.getAttribute('data-target'));
+      navOverlay.classList.remove('open');
+      if(target){
+        setTimeout(function(){ target.scrollIntoView({behavior:'smooth', block:'start'}); }, 200);
+      }
+    });
+  }
 
 })();
 </script>
