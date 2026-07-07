@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>김서우 · 양은진 모바일 청첩장</title>
 
+<!-- ===== Open Graph (카카오톡/링크 미리보기 카드) ===== -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="김서우 ♥ 양은진 결혼합니다">
+<meta property="og:description" content="2026. 10. 10 (토) 낮 12시 · 앰버서더 서울 풀만 호텔 남산룸">
+<meta property="og:image" content="https://bartbit00.github.io/wedding-invite-1010/clone/images/main1.jpg">
+<meta property="og:url" content="https://bartbit00.github.io/wedding-invite-1010/clone/">
+<meta name="twitter:card" content="summary_large_image">
+
 <!-- Google Fonts CDN만 사용 (원본 폰트파일 미사용) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -126,7 +134,7 @@
     font-family:var(--serif-en); color:#fff; font-size:15px; letter-spacing:5px; font-weight:400;
   }
   #cover .cover-names-en span{opacity:.85;}
-  #cover .cover-mid{position:relative; z-index:2; text-align:center; padding:0 20px;}
+  #cover .cover-mid{position:relative; z-index:2; text-align:center; padding:0 20px; transform:translateY(27vh);}
   #cover .cover-calli{
     font-family:var(--script); color:#fff; font-size:44px; line-height:1.15;
     text-shadow:0 2px 18px rgba(0,0,0,.35);
@@ -483,7 +491,6 @@
 <!-- ============================================================ -->
 <section id="invite" class="section fade-section">
   <span class="eyebrow">Invitation</span>
-  <h2 class="section-title">모시는 글</h2>
   <div class="divider dot"></div>
 
   <p>두 사람이 사랑으로 만나 이제 하나의 가정을 이루려 합니다.</p>
@@ -502,7 +509,6 @@
 <!-- ============================================================ -->
 <section id="names" class="section fade-section">
   <span class="eyebrow">Groom &amp; Bride</span>
-  <h2 class="section-title">이름</h2>
   <div class="divider"></div>
 
   <div class="name-lines">
@@ -570,13 +576,8 @@
 
         <div class="crypto-gift">
           <p class="crypto-label">디지털 자산으로 마음 전하실 곳</p>
-          <img class="crypto-qr" src="images/crypto-qr.jpg" alt="USDT (Ethereum ERC20) 지갑 주소 QR 코드">
-          <p class="crypto-net">USDT · Ethereum (ERC20)</p>
-          <div class="crypto-addr-row">
-            <span class="crypto-addr" id="cryptoAddr">0x3088d2724a32c107ade73ab659b82664272dc8e9</span>
-            <button class="btn sm copy-crypto-btn" data-addr="0x3088d2724a32c107ade73ab659b82664272dc8e9">복사</button>
-          </div>
-          <p class="crypto-warn">※ 이더리움(ERC20) 네트워크로만 보내주세요.</p>
+          <img class="crypto-qr" src="images/crypto-qr.jpg" alt="지갑 주소 QR 코드">
+          <p class="crypto-warn">※ ERC20 자산만 입금 가능합니다.</p>
         </div>
       </div>
     </div>
@@ -716,9 +717,36 @@
 
 <div id="toast"></div>
 
+<!-- 카카오 JavaScript SDK (공유 카드 + 일정 등록 버튼용). JS키 입력 시 활성화 -->
+<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.6/kakao.min.js"></script>
+
 <script>
 (function(){
   "use strict";
+
+  /* ===================================================================
+     설정값 — Bart가 채워넣는 곳 (이 3줄만 채우면 연동 활성화)
+     =================================================================== */
+  var CONFIG = {
+    RSVP_ENDPOINT: 'https://script.google.com/macros/s/AKfycbyWHhEdV-hrhI_S9QGipHmWrcT6Bvmm2QqdEx3bL1a5rjPrnNhQr7rPo2o5rRNDQigBGw/exec',   // 구글 Apps Script 웹앱 → 참석여부가 구글시트에 저장됨
+    KAKAO_JS_KEY:  'a9aad53a4c918d73d2b330e9a87be704',   // 카카오 JavaScript 키 (도메인 등록된 곳에서만 작동)
+    SITE_URL: 'https://bartbit00.github.io/wedding-invite-1010/clone/',
+    EVENT: {
+      title: '김서우 ♥ 양은진 결혼식',
+      // 구글캘린더용 UTC 표기 (2026-10-10 12:00~14:00 KST = 03:00~05:00 UTC)
+      gcalDates: '20261010T030000Z/20261010T050000Z',
+      location: '앰버서더 서울 풀만 호텔 19층 남산룸 (서울 중구 동호로 287)',
+      description: '김서우 · 양은진의 결혼식에 초대합니다.'
+    }
+  };
+  function calendarUrl(){
+    var e = CONFIG.EVENT;
+    return 'https://calendar.google.com/calendar/render?action=TEMPLATE'
+      + '&text=' + encodeURIComponent(e.title)
+      + '&dates=' + e.gcalDates
+      + '&location=' + encodeURIComponent(e.location)
+      + '&details=' + encodeURIComponent(e.description);
+  }
 
   var toastEl = document.getElementById('toast');
   var toastTimer = null;
@@ -867,10 +895,34 @@
       var count = document.getElementById('rsvpCount').value || 1;
       var companion = document.getElementById('rsvpCompanion').checked;
 
-      console.log('[RSVP 제출 - 데모]', {attend:attend, side:side, name:name, count:count, companion:companion});
-      alert('참석여부가 접수되었습니다.\n(데모 화면입니다 - 실제 저장은 구글폼/시트 연동 후 동작합니다)\n\n참석: '+attend+'\n구분: '+side+'\n성함: '+name+'\n인원: '+count+'\n동행: '+(companion?'있음':'없음'));
-      rsvpModal.classList.remove('open');
-      this.reset();
+      var payload = {attend:attend, side:side, name:name, count:count, companion:companion};
+      var formEl = this;
+
+      if(CONFIG.RSVP_ENDPOINT){
+        // 구글 시트(Apps Script)로 전송. text/plain이라 CORS 프리플라이트 없음.
+        var submitBtn = formEl.querySelector('button[type=submit]');
+        if(submitBtn){ submitBtn.disabled = true; submitBtn.textContent = '전달 중...'; }
+        // no-cors: GAS 웹앱은 CORS 응답 헤더가 없어 응답을 못 읽음. 저장은 되므로 낙관적 처리.
+        fetch(CONFIG.RSVP_ENDPOINT, {
+          method: 'POST',
+          mode: 'no-cors',
+          body: JSON.stringify(payload)
+        }).then(function(){
+          showToast('참석여부가 전달되었습니다. 감사합니다');
+        }).catch(function(){
+          showToast('전송에 실패했습니다. 잠시 후 다시 시도해주세요');
+        }).finally(function(){
+          if(submitBtn){ submitBtn.disabled = false; submitBtn.textContent = '제출하기'; }
+          rsvpModal.classList.remove('open');
+          formEl.reset();
+        });
+      } else {
+        // 미연동 상태(데모): 콘솔+알림
+        console.log('[RSVP 제출 - 데모]', payload);
+        alert('참석여부가 접수되었습니다.\n(데모 화면입니다 - 구글시트 연동 후 실제 저장됩니다)\n\n참석: '+attend+'\n구분: '+side+'\n성함: '+name+'\n인원: '+count+'\n동행: '+(companion?'있음':'없음'));
+        rsvpModal.classList.remove('open');
+        formEl.reset();
+      }
     });
   }
 
@@ -884,12 +936,6 @@
     btn.addEventListener('click', function(e){
       e.stopPropagation();
       copyText(btn.getAttribute('data-acct'), '계좌번호가 복사되었습니다');
-    });
-  });
-  document.querySelectorAll('.copy-crypto-btn').forEach(function(btn){
-    btn.addEventListener('click', function(e){
-      e.stopPropagation();
-      copyText(btn.getAttribute('data-addr'), '지갑 주소가 복사되었습니다');
     });
   });
 
@@ -914,8 +960,29 @@
     });
   }
 
-  /* 공유하기 */
+  /* 공유하기 — 카카오 JS키 설정 시 카톡 공유카드(사진+일정등록 버튼), 아니면 기본 공유로 폴백 */
   function doShare(){
+    // 1) 카카오톡 공유 (카드 + '일정 등록' 버튼)
+    if(CONFIG.KAKAO_JS_KEY && window.Kakao){
+      try{
+        if(!Kakao.isInitialized()) Kakao.init(CONFIG.KAKAO_JS_KEY);
+        Kakao.Share.sendDefault({
+          objectType: 'feed',
+          content: {
+            title: '김서우 ♥ 양은진 결혼합니다',
+            description: '2026. 10. 10 (토) 낮 12시\n앰버서더 서울 풀만 호텔 남산룸',
+            imageUrl: CONFIG.SITE_URL + 'images/main1.jpg',
+            link: { mobileWebUrl: CONFIG.SITE_URL, webUrl: CONFIG.SITE_URL }
+          },
+          buttons: [
+            { title: '청첩장 보기', link: { mobileWebUrl: CONFIG.SITE_URL, webUrl: CONFIG.SITE_URL } },
+            { title: '일정 등록', link: { mobileWebUrl: calendarUrl(), webUrl: calendarUrl() } }
+          ]
+        });
+        return;
+      }catch(err){ /* 카카오 실패 시 아래 기본 공유로 폴백 */ }
+    }
+    // 2) 폴백: Web Share API 또는 링크 복사
     var shareData = {
       title: '김서우 ♥ 양은진 결혼합니다',
       text: 'October 10, 2026 · Saturday - 저희 두 사람의 결혼식에 초대합니다.',
