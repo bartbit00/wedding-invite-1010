@@ -1029,24 +1029,32 @@
       };
 
       if(CONFIG.RSVP_ENDPOINT){
-        // 구글 시트(Apps Script)로 전송. text/plain이라 CORS 프리플라이트 없음.
+        // 구글 시트(Apps Script)로 전송.
+        // 본문을 문자열로 넘기면 Content-Type이 text/plain이 되어 CORS 프리플라이트가 없고,
+        // GAS 웹앱(액세스: 모든 사용자)은 최종 응답에 CORS 헤더를 실어주므로 응답 JSON을 읽을 수 있다.
+        // → no-cors(응답을 못 읽어 무조건 성공 처리)를 쓰지 않고, 서버가 success를 준 경우에만 성공 처리한다.
         var submitBtn = formEl.querySelector('button[type=submit]');
         if(submitBtn){ submitBtn.disabled = true; submitBtn.textContent = '전달 중...'; }
-        // no-cors: GAS 웹앱은 CORS 응답 헤더가 없어 응답을 못 읽음. 저장은 되므로 낙관적 처리.
         fetch(CONFIG.RSVP_ENDPOINT, {
           method: 'POST',
-          mode: 'no-cors',
           body: JSON.stringify(payload)
-        }).then(function(){
+        }).then(function(res){
+          return res.text();
+        }).then(function(text){
+          var ok = false;
+          try{ ok = JSON.parse(text).result === 'success'; }catch(err){ ok = false; }
+          if(!ok) throw new Error('save-failed');
+          // 저장이 확인된 뒤에만 기록·초기화한다
           markSubmitted();
           showToast('참석여부가 전달되었습니다. 감사합니다');
-        }).catch(function(){
-          showToast('전송에 실패했습니다. 잠시 후 다시 시도해주세요');
-        }).finally(function(){
-          if(submitBtn){ submitBtn.disabled = false; submitBtn.textContent = '제출하기'; }
           rsvpModal.classList.remove('open');
           formEl.reset();
           syncAttendRows();
+        }).catch(function(){
+          // 실패 시 모달을 닫지도, 입력값을 지우지도 않는다 — 그대로 다시 누르면 되게
+          showToast('전달에 실패했습니다. 잠시 후 다시 눌러주세요');
+        }).finally(function(){
+          if(submitBtn){ submitBtn.disabled = false; submitBtn.textContent = '제출하기'; }
         });
       } else {
         // 미연동 상태(데모): 콘솔+알림
