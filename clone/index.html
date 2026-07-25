@@ -266,9 +266,6 @@
   .radio-row.err label{color:#d9534f;}
   .form-row .req{color:var(--pink-deep);}
   .form-hint{font-size:11px; color:var(--text-faint); margin:6px 0 0; line-height:1.6; font-weight:300;}
-  .num-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
-  .num-grid .form-hint{text-align:center; margin-top:5px;}
-  .form-row.is-hidden{display:none;}
   .form-note{font-size:11px; color:var(--text-faint); line-height:1.7; text-align:center; margin:18px 0 0; font-weight:300;}
   .rsvp-resubmit{font-size:12px; color:var(--pink-deep); text-align:center; line-height:1.7; margin:-8px 0 18px; font-weight:300;}
   .modal-actions{display:flex; gap:10px; margin-top:22px;}
@@ -672,7 +669,7 @@
 <section id="rsvp" class="section fade-section" style="text-align:center;">
   <span class="eyebrow">RSVP</span>
   <h2 class="section-title">참석여부 전달</h2>
-  <p class="section-desc">식사 준비를 위해 참석 여부를 미리 알려주시면<br>정성껏 모시는 데 큰 도움이 됩니다.</p>
+  <p class="section-desc">좌석을 이름으로 준비하고 있습니다.<br>참석 여부를 미리 알려주시면 큰 도움이 됩니다.</p>
   <button class="btn solid" id="openRsvpBtn">참석여부 남기기</button>
 </section>
 
@@ -699,33 +696,11 @@
       <div class="form-row">
         <label for="rsvpName">성함 <span class="req">*</span></label>
         <input type="text" id="rsvpName" placeholder="이름을 입력해주세요" autocomplete="name">
+        <p class="form-hint">좌석이 이름으로 정해져 있습니다. 함께 오시는 분이 있으면<br>그분 성함으로도 한 번 더 남겨주세요.</p>
       </div>
       <div class="form-row">
         <label for="rsvpPhone">연락처</label>
         <input type="tel" id="rsvpPhone" placeholder="010-0000-0000 (선택)" autocomplete="tel" inputmode="numeric">
-      </div>
-
-      <div class="form-row is-hidden" id="countRow">
-        <label>참석 인원</label>
-        <div class="num-grid">
-          <div>
-            <input type="number" id="rsvpAdult" min="1" max="30" value="1" inputmode="numeric">
-            <p class="form-hint">성인 (본인 포함)</p>
-          </div>
-          <div>
-            <input type="number" id="rsvpChild" min="0" max="30" value="0" inputmode="numeric">
-            <p class="form-hint">미성년</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="form-row is-hidden" id="mealRow">
-        <label>식사 여부</label>
-        <div class="radio-row">
-          <label><input type="radio" name="meal" value="식사함" checked> 식사함</label>
-          <label><input type="radio" name="meal" value="식사 안 함"> 식사 안 함</label>
-        </div>
-        <p class="form-hint">호텔 예식이라 식사 인원을 미리 확정해야 합니다.</p>
       </div>
 
       <div class="form-row">
@@ -962,7 +937,6 @@
   if(rsvpModal && openRsvpBtn && rsvpCancelBtn && rsvpForm){
     openRsvpBtn.addEventListener('click', function(){
       rsvpModal.classList.add('open');
-      syncAttendRows();
       rsvpResubmit.style.display = wasSubmitted() ? 'block' : 'none';
     });
     rsvpCancelBtn.addEventListener('click', function(){
@@ -971,19 +945,6 @@
     rsvpModal.addEventListener('click', function(e){
       if(e.target === rsvpModal) rsvpModal.classList.remove('open');
     });
-    /* 참석/미참석에 따라 인원·식사 칸 표시 전환 */
-    var countRow = document.getElementById('countRow');
-    var mealRow  = document.getElementById('mealRow');
-    function syncAttendRows(){
-      var picked = rsvpForm.querySelector('input[name=attend]:checked');
-      var going = !!picked && picked.value === '참석';
-      countRow.classList.toggle('is-hidden', !going);
-      mealRow.classList.toggle('is-hidden', !going);
-    }
-    Array.prototype.forEach.call(rsvpForm.querySelectorAll('input[name=attend]'), function(el){
-      el.addEventListener('change', syncAttendRows);
-    });
-
     /* 이미 한 번 전달한 하객에게 안내 문구 노출 */
     var rsvpResubmit = document.getElementById('rsvpResubmit');
     function markSubmitted(){
@@ -1013,20 +974,9 @@
       var name   = nameEl.value.trim();
       var phone  = document.getElementById('rsvpPhone').value.trim();
       var memo   = document.getElementById('rsvpMemo').value.trim();
-      var going  = attend === '참석';
-
-      /* 미참석이면 인원·식사는 기록하지 않는다 */
-      var adult = going ? Math.max(1, parseInt(document.getElementById('rsvpAdult').value, 10) || 1) : 0;
-      var child = going ? Math.max(0, parseInt(document.getElementById('rsvpChild').value, 10) || 0) : 0;
-      var meal  = going ? formEl.querySelector('input[name=meal]:checked').value : '';
-      var count = adult + child;
-
-      var payload = {
-        attend: attend, side: side, name: name, phone: phone,
-        adult: adult, child: child, count: count, meal: meal, memo: memo,
-        // 구버전 시트 호환용(동행여부 칸)
-        companion: count > 1
-      };
+      /* 좌석이 이름으로 지정되는 코스 예식이라 인원수·식사여부는 받지 않는다.
+         한 사람이 한 줄 — 동행인은 각자 자기 이름으로 따로 남긴다. */
+      var payload = {attend: attend, side: side, name: name, phone: phone, memo: memo};
 
       if(CONFIG.RSVP_ENDPOINT){
         // 구글 시트(Apps Script)로 전송.
@@ -1049,7 +999,6 @@
           showToast('참석여부가 전달되었습니다. 감사합니다');
           rsvpModal.classList.remove('open');
           formEl.reset();
-          syncAttendRows();
         }).catch(function(){
           // 실패 시 모달을 닫지도, 입력값을 지우지도 않는다 — 그대로 다시 누르면 되게
           showToast('전달에 실패했습니다. 잠시 후 다시 눌러주세요');
@@ -1059,11 +1008,10 @@
       } else {
         // 미연동 상태(데모): 콘솔+알림
         console.log('[RSVP 제출 - 데모]', payload);
-        alert('참석여부가 접수되었습니다.\n(데모 화면입니다 - 구글시트 연동 후 실제 저장됩니다)\n\n참석: '+attend+'\n구분: '+side+'\n성함: '+name+'\n인원: '+count+' (성인 '+adult+' · 미성년 '+child+')\n식사: '+(meal||'-'));
+        alert('참석여부가 접수되었습니다.\n(데모 화면입니다 - 구글시트 연동 후 실제 저장됩니다)\n\n참석: '+attend+'\n구분: '+side+'\n성함: '+name);
         markSubmitted();
         rsvpModal.classList.remove('open');
         formEl.reset();
-        syncAttendRows();
       }
     });
   }
