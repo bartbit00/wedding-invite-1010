@@ -254,11 +254,23 @@
   .modal-sheet h3{font-family:var(--serif-kr); font-size:18px; text-align:center; margin:0 0 20px; font-weight:500;}
   .form-row{margin-bottom:16px;}
   .form-row label{display:block; font-size:12px; color:var(--text-soft); margin-bottom:6px;}
-  .form-row input[type=text], .form-row input[type=number], .form-row input[type=tel]{
+  .form-row input[type=text], .form-row input[type=number], .form-row input[type=tel], .form-row textarea{
     width:100%; border:1px solid var(--line); border-radius:6px; padding:11px 12px; font-size:13px; font-family:inherit;
+    background:#fff; color:var(--text); -webkit-appearance:none; appearance:none;
   }
+  .form-row textarea{resize:none; line-height:1.7;}
+  .form-row input:focus, .form-row textarea:focus{outline:none; border-color:var(--pink-deep);}
+  .form-row input.err, .form-row textarea.err{border-color:#d9534f;}
   .radio-row{display:flex; gap:16px;}
   .radio-row label{display:flex; align-items:center; gap:6px; font-size:13px; color:var(--text); margin:0;}
+  .radio-row.err label{color:#d9534f;}
+  .form-row .req{color:var(--pink-deep);}
+  .form-hint{font-size:11px; color:var(--text-faint); margin:6px 0 0; line-height:1.6; font-weight:300;}
+  .num-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .num-grid .form-hint{text-align:center; margin-top:5px;}
+  .form-row.is-hidden{display:none;}
+  .form-note{font-size:11px; color:var(--text-faint); line-height:1.7; text-align:center; margin:18px 0 0; font-weight:300;}
+  .rsvp-resubmit{font-size:12px; color:var(--pink-deep); text-align:center; line-height:1.7; margin:-8px 0 18px; font-weight:300;}
   .modal-actions{display:flex; gap:10px; margin-top:22px;}
   .modal-actions .btn{flex:1;}
 
@@ -660,40 +672,69 @@
 <section id="rsvp" class="section fade-section" style="text-align:center;">
   <span class="eyebrow">RSVP</span>
   <h2 class="section-title">참석여부 전달</h2>
-  <p class="section-desc">참석 여부를 미리 알려주시면<br>준비에 큰 도움이 됩니다.</p>
+  <p class="section-desc">식사 준비를 위해 참석 여부를 미리 알려주시면<br>정성껏 모시는 데 큰 도움이 됩니다.</p>
   <button class="btn solid" id="openRsvpBtn">참석여부 남기기</button>
 </section>
 
 <div class="modal-overlay" id="rsvpModal">
   <div class="modal-sheet">
     <h3>참석여부 전달</h3>
-    <!-- 실제 연동 자리: 여기서 수집한 값을 구글폼/구글시트 Apps Script 등으로 전송 -->
-    <form id="rsvpForm">
+    <p class="rsvp-resubmit" id="rsvpResubmit" style="display:none;">이전에 전달해 주셨습니다.<br>내용을 고쳐 다시 보내셔도 괜찮습니다.</p>
+    <!-- 수집값은 구글 시트(Apps Script 웹앱)로 전송됩니다 — CONFIG.RSVP_ENDPOINT -->
+    <form id="rsvpForm" novalidate>
       <div class="form-row">
-        <label>참석 여부</label>
-        <div class="radio-row">
-          <label><input type="radio" name="attend" value="참석" checked> 참석</label>
+        <label>참석 여부 <span class="req">*</span></label>
+        <div class="radio-row" id="attendRow">
+          <label><input type="radio" name="attend" value="참석"> 참석</label>
           <label><input type="radio" name="attend" value="미참석"> 미참석</label>
         </div>
       </div>
       <div class="form-row">
-        <label>구분</label>
-        <div class="radio-row">
-          <label><input type="radio" name="side" value="신랑측" checked> 신랑측</label>
+        <label>구분 <span class="req">*</span></label>
+        <div class="radio-row" id="sideRow">
+          <label><input type="radio" name="side" value="신랑측"> 신랑측</label>
           <label><input type="radio" name="side" value="신부측"> 신부측</label>
         </div>
       </div>
       <div class="form-row">
-        <label for="rsvpName">성함</label>
-        <input type="text" id="rsvpName" placeholder="이름을 입력해주세요">
+        <label for="rsvpName">성함 <span class="req">*</span></label>
+        <input type="text" id="rsvpName" placeholder="이름을 입력해주세요" autocomplete="name">
       </div>
       <div class="form-row">
-        <label for="rsvpCount">참석 인원 (본인 포함)</label>
-        <input type="number" id="rsvpCount" min="1" value="1">
+        <label for="rsvpPhone">연락처</label>
+        <input type="tel" id="rsvpPhone" placeholder="010-0000-0000 (선택)" autocomplete="tel" inputmode="numeric">
       </div>
+
+      <div class="form-row is-hidden" id="countRow">
+        <label>참석 인원</label>
+        <div class="num-grid">
+          <div>
+            <input type="number" id="rsvpAdult" min="1" max="30" value="1" inputmode="numeric">
+            <p class="form-hint">성인 (본인 포함)</p>
+          </div>
+          <div>
+            <input type="number" id="rsvpChild" min="0" max="30" value="0" inputmode="numeric">
+            <p class="form-hint">미성년</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row is-hidden" id="mealRow">
+        <label>식사 여부</label>
+        <div class="radio-row">
+          <label><input type="radio" name="meal" value="식사함" checked> 식사함</label>
+          <label><input type="radio" name="meal" value="식사 안 함"> 식사 안 함</label>
+        </div>
+        <p class="form-hint">호텔 예식이라 식사 인원을 미리 확정해야 합니다.</p>
+      </div>
+
       <div class="form-row">
-        <label><input type="checkbox" id="rsvpCompanion"> 동행인이 있습니다</label>
+        <label for="rsvpMemo">전달 사항</label>
+        <textarea id="rsvpMemo" rows="2" placeholder="채식·알레르기 등 전해주실 말씀 (선택)" maxlength="200"></textarea>
       </div>
+
+      <p class="form-note">알려주신 내용은 예식 준비 목적으로만 사용하며,<br>예식이 끝나면 폐기합니다.</p>
+
       <div class="modal-actions">
         <button type="button" class="btn block" id="rsvpCancelBtn">닫기</button>
         <button type="submit" class="btn solid block">제출하기</button>
@@ -921,6 +962,8 @@
   if(rsvpModal && openRsvpBtn && rsvpCancelBtn && rsvpForm){
     openRsvpBtn.addEventListener('click', function(){
       rsvpModal.classList.add('open');
+      syncAttendRows();
+      rsvpResubmit.style.display = wasSubmitted() ? 'block' : 'none';
     });
     rsvpCancelBtn.addEventListener('click', function(){
       rsvpModal.classList.remove('open');
@@ -928,16 +971,62 @@
     rsvpModal.addEventListener('click', function(e){
       if(e.target === rsvpModal) rsvpModal.classList.remove('open');
     });
+    /* 참석/미참석에 따라 인원·식사 칸 표시 전환 */
+    var countRow = document.getElementById('countRow');
+    var mealRow  = document.getElementById('mealRow');
+    function syncAttendRows(){
+      var picked = rsvpForm.querySelector('input[name=attend]:checked');
+      var going = !!picked && picked.value === '참석';
+      countRow.classList.toggle('is-hidden', !going);
+      mealRow.classList.toggle('is-hidden', !going);
+    }
+    Array.prototype.forEach.call(rsvpForm.querySelectorAll('input[name=attend]'), function(el){
+      el.addEventListener('change', syncAttendRows);
+    });
+
+    /* 이미 한 번 전달한 하객에게 안내 문구 노출 */
+    var rsvpResubmit = document.getElementById('rsvpResubmit');
+    function markSubmitted(){
+      try{ localStorage.setItem('rsvpSent', '1'); }catch(err){}
+    }
+    function wasSubmitted(){
+      try{ return localStorage.getItem('rsvpSent') === '1'; }catch(err){ return false; }
+    }
+
     rsvpForm.addEventListener('submit', function(e){
       e.preventDefault();
-      var attend = this.querySelector('input[name=attend]:checked').value;
-      var side = this.querySelector('input[name=side]:checked').value;
-      var name = document.getElementById('rsvpName').value || '(이름 미입력)';
-      var count = document.getElementById('rsvpCount').value || 1;
-      var companion = document.getElementById('rsvpCompanion').checked;
-
-      var payload = {attend:attend, side:side, name:name, count:count, companion:companion};
       var formEl = this;
+      var attendEl = formEl.querySelector('input[name=attend]:checked');
+      var sideEl   = formEl.querySelector('input[name=side]:checked');
+      var nameEl   = document.getElementById('rsvpName');
+
+      /* 필수값 검증 — 하나라도 비면 저장하지 않는다 */
+      var attendRow = document.getElementById('attendRow');
+      var sideRow   = document.getElementById('sideRow');
+      attendRow.classList.remove('err'); sideRow.classList.remove('err'); nameEl.classList.remove('err');
+      if(!attendEl){ attendRow.classList.add('err'); showToast('참석 여부를 선택해주세요'); return; }
+      if(!sideEl){ sideRow.classList.add('err'); showToast('신랑측·신부측을 선택해주세요'); return; }
+      if(!nameEl.value.trim()){ nameEl.classList.add('err'); nameEl.focus(); showToast('성함을 입력해주세요'); return; }
+
+      var attend = attendEl.value;
+      var side   = sideEl.value;
+      var name   = nameEl.value.trim();
+      var phone  = document.getElementById('rsvpPhone').value.trim();
+      var memo   = document.getElementById('rsvpMemo').value.trim();
+      var going  = attend === '참석';
+
+      /* 미참석이면 인원·식사는 기록하지 않는다 */
+      var adult = going ? Math.max(1, parseInt(document.getElementById('rsvpAdult').value, 10) || 1) : 0;
+      var child = going ? Math.max(0, parseInt(document.getElementById('rsvpChild').value, 10) || 0) : 0;
+      var meal  = going ? formEl.querySelector('input[name=meal]:checked').value : '';
+      var count = adult + child;
+
+      var payload = {
+        attend: attend, side: side, name: name, phone: phone,
+        adult: adult, child: child, count: count, meal: meal, memo: memo,
+        // 구버전 시트 호환용(동행여부 칸)
+        companion: count > 1
+      };
 
       if(CONFIG.RSVP_ENDPOINT){
         // 구글 시트(Apps Script)로 전송. text/plain이라 CORS 프리플라이트 없음.
@@ -949,6 +1038,7 @@
           mode: 'no-cors',
           body: JSON.stringify(payload)
         }).then(function(){
+          markSubmitted();
           showToast('참석여부가 전달되었습니다. 감사합니다');
         }).catch(function(){
           showToast('전송에 실패했습니다. 잠시 후 다시 시도해주세요');
@@ -956,13 +1046,16 @@
           if(submitBtn){ submitBtn.disabled = false; submitBtn.textContent = '제출하기'; }
           rsvpModal.classList.remove('open');
           formEl.reset();
+          syncAttendRows();
         });
       } else {
         // 미연동 상태(데모): 콘솔+알림
         console.log('[RSVP 제출 - 데모]', payload);
-        alert('참석여부가 접수되었습니다.\n(데모 화면입니다 - 구글시트 연동 후 실제 저장됩니다)\n\n참석: '+attend+'\n구분: '+side+'\n성함: '+name+'\n인원: '+count+'\n동행: '+(companion?'있음':'없음'));
+        alert('참석여부가 접수되었습니다.\n(데모 화면입니다 - 구글시트 연동 후 실제 저장됩니다)\n\n참석: '+attend+'\n구분: '+side+'\n성함: '+name+'\n인원: '+count+' (성인 '+adult+' · 미성년 '+child+')\n식사: '+(meal||'-'));
+        markSubmitted();
         rsvpModal.classList.remove('open');
         formEl.reset();
+        syncAttendRows();
       }
     });
   }
