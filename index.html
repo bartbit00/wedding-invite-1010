@@ -214,12 +214,47 @@
   #lightbox{
     position:fixed; inset:0; z-index:900; background:rgba(0,0,0,.88);
     display:none; align-items:center; justify-content:center; padding:24px;
+    touch-action:none; -webkit-user-select:none; user-select:none;
   }
   #lightbox.open{display:flex;}
   #lightbox .lb-inner{width:100%; max-width:360px; position:relative;}
-  #lightbox img{width:100%; max-height:82vh; object-fit:contain;}
+  #lightbox .lb-viewport{width:100%; overflow:hidden;}
+  #lightbox .lb-track{
+    display:flex; width:100%; will-change:transform;
+    transform:translate3d(0,0,0);
+  }
+  #lightbox .lb-track.lb-anim{transition:transform .28s cubic-bezier(.22,.61,.36,1);}
+  #lightbox .lb-cell{
+    flex:0 0 100%; width:100%; display:flex; align-items:center; justify-content:center;
+  }
+  #lightbox img{
+    width:100%; max-height:82vh; object-fit:contain;
+    max-height:min(82vh, calc(100vh - 150px));   /* 짧은 화면에서 버튼·카운터 자리 확보 (min 미지원 브라우저는 82vh 유지) */
+    -webkit-user-drag:none; user-drag:none; -webkit-touch-callout:none;
+  }
   #lightbox .lb-close{
-    position:absolute; top:-40px; right:0; color:#fff; font-size:26px; background:none; border:none; line-height:1;
+    position:fixed; top:10px; right:12px;
+    top:calc(env(safe-area-inset-top, 0px) + 10px);
+    width:44px; height:44px; color:#fff; font-size:26px; background:none; border:none; line-height:1;
+  }
+  #lightbox .lb-nav{
+    position:absolute; top:50%; transform:translateY(-50%);
+    width:38px; height:38px; border-radius:50%; border:none; cursor:pointer;
+    background:rgba(0,0,0,.48); color:#fff; font-size:24px; line-height:1;
+    text-shadow:0 1px 3px rgba(0,0,0,.6);   /* 밝은 사진 위 가시성 */
+    display:flex; align-items:center; justify-content:center; padding:0 0 3px;
+  }
+  #lightbox .lb-nav.lb-prev{left:-6px;}
+  #lightbox .lb-nav.lb-next{right:-6px;}
+  #lightbox .lb-counter{
+    position:fixed; left:0; right:0; bottom:14px; text-align:center;
+    bottom:calc(env(safe-area-inset-bottom, 0px) + 14px);
+    color:rgba(255,255,255,.72); font-size:12px; letter-spacing:1px;
+    text-shadow:0 1px 3px rgba(0,0,0,.6);
+  }
+  html.lb-locked, html.lb-locked body{overflow:hidden;}
+  @media (prefers-reduced-motion: reduce){
+    #lightbox .lb-track.lb-anim{transition-duration:.01ms;}
   }
 
   /* ================= 7. 동영상 ================= */
@@ -557,11 +592,20 @@
   </div>
 </section>
 
-<!-- 라이트박스 모달 -->
-<div id="lightbox">
+<!-- 라이트박스 모달 (좌우 스와이프 / 화살표 / 키보드로 넘김) -->
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="사진 확대 보기">
   <div class="lb-inner">
     <button class="lb-close" id="lbClose" aria-label="닫기">&times;</button>
-    <img id="lbPhoto" src="" alt="확대 사진">
+    <div class="lb-viewport" id="lbViewport">
+      <div class="lb-track" id="lbTrack">
+        <div class="lb-cell"><img src="" alt="" draggable="false"></div>
+        <div class="lb-cell"><img src="" alt="확대 사진" draggable="false"></div>
+        <div class="lb-cell"><img src="" alt="" draggable="false"></div>
+      </div>
+    </div>
+    <button class="lb-nav lb-prev" id="lbPrevBtn" type="button" aria-label="이전 사진">&#8249;</button>
+    <button class="lb-nav lb-next" id="lbNextBtn" type="button" aria-label="다음 사진">&#8250;</button>
+    <div class="lb-counter" id="lbCounter" aria-live="polite"></div>
   </div>
 </div>
 
@@ -880,28 +924,279 @@
     }
   }
 
-  var lightbox = document.getElementById('lightbox');
-  var lbPhoto = document.getElementById('lbPhoto');
-  if(galleryGrid && lightbox && lbPhoto){
+  /* ── 라이트박스: 3패널 트랙 + 스와이프/화살표/키보드 넘김 (순환) ── */
+  var lightbox   = document.getElementById('lightbox');
+  var lbViewport = document.getElementById('lbViewport');
+  var lbTrack    = document.getElementById('lbTrack');
+  var lbCounter  = document.getElementById('lbCounter');
+
+  if(galleryGrid && lightbox && lbTrack && lbViewport){
+    var lbInner    = lightbox.querySelector('.lb-inner');
+    var lbCloseBtn = document.getElementById('lbClose');
+    var lbPrevBtn  = document.getElementById('lbPrevBtn');
+    var lbNextBtn  = document.getElementById('lbNextBtn');
+
+    var lbCurrent = 0;      // 0-base 현재 인덱스
+    var lbW       = 0;      // 패널 1칸 폭(px)
+    var lbBusy    = false;  // 스냅 애니메이션 중 입력 잠금
+    var lbDragging = false, lbAxis = '', lbDx = 0;
+    var lbTouchId = null, lbStartX = 0, lbStartY = 0;
+    var lbMovedFar = false, lbSuppressClick = false, lbSuppressTimer = null;
+    var lbLastFocus = null;
+    var lbSeq = 0;          // 열림/닫힘 세대 — 이전 세대의 잔여 애니메이션 콜백 무효화
+    var lbHistoryArmed = false;   // 뒤로가기 = 닫기용 history 상태 보유 여부
+
+    function lbNorm(i){
+      var n = galleryImgs.length;
+      return ((i % n) + n) % n;   // 끝↔처음 순환
+    }
+    function lbCells(){ return lbTrack.getElementsByClassName('lb-cell'); }
+
+    function lbSetCell(cell, idx){
+      if(!cell) return;
+      var img = cell.getElementsByTagName('img')[0];
+      if(!img) return;
+      var src = galleryImgs[idx];
+      if(img.getAttribute('src') !== src) img.setAttribute('src', src);   // 동일 src 재지정 = 깜빡임 방지
+      img.setAttribute('alt', '갤러리 확대 사진 ' + (idx + 1));
+    }
+    function lbFillEdges(){
+      var c = lbCells();
+      lbSetCell(c[0], lbNorm(lbCurrent - 1));
+      lbSetCell(c[2], lbNorm(lbCurrent + 1));
+    }
+    function lbFillAll(){
+      var c = lbCells();
+      lbSetCell(c[0], lbNorm(lbCurrent - 1));
+      lbSetCell(c[1], lbCurrent);
+      lbSetCell(c[2], lbNorm(lbCurrent + 1));
+    }
+    function lbUpdateCounter(){
+      if(lbCounter) lbCounter.textContent = (lbCurrent + 1) + ' / ' + galleryImgs.length;
+    }
+
+    function lbMeasure(){
+      lbW = lbViewport.clientWidth || lbInner.clientWidth || window.innerWidth || 0;
+    }
+    /* dx = 중앙 기준 추가 이동량(px). 중앙 정렬은 translateX(-lbW) */
+    function lbPlace(dx, animate){
+      if(animate) lbTrack.classList.add('lb-anim');
+      else lbTrack.classList.remove('lb-anim');
+      lbTrack.style.transform = 'translate3d(' + (-lbW + dx) + 'px,0,0)';
+    }
+
+    /* transitionend를 기다리되, 누락/취소 대비 타이머 폴백 */
+    function lbWaitEnd(fn){
+      var done = false, seq = lbSeq;
+      function finish(){
+        if(done) return;
+        done = true;
+        clearTimeout(timer);
+        lbTrack.removeEventListener('transitionend', onEnd);
+        lbTrack.removeEventListener('transitioncancel', onEnd);
+        if(seq === lbSeq) fn();   // 닫기·재열기로 세대가 바뀌었으면 실행하지 않음
+      }
+      function onEnd(ev){
+        if(ev.target !== lbTrack) return;
+        if(ev.propertyName && ev.propertyName !== 'transform') return;
+        finish();
+      }
+      var timer = setTimeout(finish, 450);
+      lbTrack.addEventListener('transitionend', onEnd);
+      lbTrack.addEventListener('transitioncancel', onEnd);
+    }
+
+    /* 애니메이션 종료 후 원자적 재배치: 셀 DOM을 회전시켜 중앙 패널은 손대지 않음 */
+    function lbShift(dir){
+      lbCurrent = lbNorm(lbCurrent + dir);
+      lbTrack.classList.remove('lb-anim');
+      if(dir > 0) lbTrack.appendChild(lbTrack.firstElementChild);
+      else        lbTrack.insertBefore(lbTrack.lastElementChild, lbTrack.firstElementChild);
+      lbTrack.style.transform = 'translate3d(' + (-lbW) + 'px,0,0)';   // 같은 프레임에 재중앙 정렬
+      lbFillEdges();
+      lbUpdateCounter();
+      lbBusy = false;
+    }
+
+    function lbGo(dir){
+      if(lbBusy || galleryImgs.length < 2) return;
+      lbBusy = true;
+      lbMeasure();
+      lbPlace(-dir * lbW, true);
+      lbWaitEnd(function(){ lbShift(dir); });
+    }
+
+    function lbSnapBack(){
+      lbBusy = true;
+      lbPlace(0, true);
+      lbWaitEnd(function(){
+        lbTrack.classList.remove('lb-anim');
+        lbBusy = false;
+      });
+    }
+
+    function lbLockScroll(on){
+      document.documentElement.classList.toggle('lb-locked', !!on);
+    }
+
+    function lbOpen(idx){
+      lbSeq++;
+      lbCurrent = lbNorm(idx);
+      lbLastFocus = document.activeElement;
+      lbBusy = false; lbDragging = false; lbAxis = ''; lbDx = 0; lbTouchId = null;
+      lbTrack.classList.remove('lb-anim');
+      lbFillAll();
+      lightbox.classList.add('open');
+      lbLockScroll(true);
+      lbMeasure();                 // .open 이후에 측정해야 폭이 잡힘
+      lbPlace(0, false);
+      lbUpdateCounter();
+      if(lbCloseBtn) lbCloseBtn.focus();
+      /* 안드로이드·카톡 인앱: 뒤로가기가 페이지 이탈이 아니라 라이트박스 닫기가 되도록 */
+      if(!lbHistoryArmed){
+        try{ history.pushState({lb:1}, ''); lbHistoryArmed = true; }catch(e){}
+      }
+    }
+
+    function lbCloseBox(fromPop){
+      lbSeq++;
+      lightbox.classList.remove('open');
+      lbLockScroll(false);
+      lbTrack.classList.remove('lb-anim');
+      lbBusy = false; lbDragging = false; lbAxis = ''; lbDx = 0; lbTouchId = null;
+      if(lbLastFocus && lbLastFocus.focus){ try{ lbLastFocus.focus(); }catch(e){} }
+      lbLastFocus = null;
+      if(lbHistoryArmed){
+        lbHistoryArmed = false;
+        if(!fromPop){ try{ history.back(); }catch(e){} }   // UI로 닫으면 넣어둔 상태를 소비
+      }
+    }
+
+    window.addEventListener('popstate', function(){
+      if(lightbox.classList.contains('open')) lbCloseBox(true);
+      else lbHistoryArmed = false;
+    });
+
+    /* 그리드 → 열기 (더보기 접힘 상태와 무관하게 30장 전체가 대상) */
     galleryGrid.addEventListener('click', function(e){
       var item = e.target.closest('.g-item');
       if(!item) return;
-      lbPhoto.src = item.getAttribute('data-src');
-      lbPhoto.alt = '갤러리 확대 사진 ' + item.getAttribute('data-idx');
-      lightbox.classList.add('open');
+      var idx = parseInt(item.getAttribute('data-idx'), 10);
+      lbOpen(isNaN(idx) ? 0 : idx - 1);   // data-idx는 1-base
     });
-    var lbClose = document.getElementById('lbClose');
-    if(lbClose){
-      lbClose.addEventListener('click', function(){
-        lightbox.classList.remove('open');
-        lbPhoto.removeAttribute('src');
-      });
+
+    if(lbCloseBtn){
+      lbCloseBtn.addEventListener('click', function(e){ e.stopPropagation(); lbCloseBox(); });
+    }
+    if(lbPrevBtn){
+      lbPrevBtn.addEventListener('click', function(e){ e.stopPropagation(); lbGo(-1); });
+    }
+    if(lbNextBtn){
+      lbNextBtn.addEventListener('click', function(e){ e.stopPropagation(); lbGo(1); });
+    }
+    if(galleryImgs.length < 2){
+      if(lbPrevBtn) lbPrevBtn.style.display = 'none';
+      if(lbNextBtn) lbNextBtn.style.display = 'none';
+    }
+
+    /* 배경(여백·레터박스) 클릭 시 닫기 — 단, 드래그였으면 닫지 않음 */
+    function lbIsBackdrop(t){
+      if(!t) return false;
+      if(t === lightbox || t === lbInner || t === lbViewport || t === lbTrack) return true;
+      return !!(t.classList && t.classList.contains('lb-cell'));
     }
     lightbox.addEventListener('click', function(e){
-      if(e.target === lightbox){
-        lightbox.classList.remove('open');
-        lbPhoto.removeAttribute('src');
+      if(lbSuppressClick) return;
+      if(lbIsBackdrop(e.target)) lbCloseBox();
+    });
+
+    /* 이미지 기본 드래그 차단 (데스크톱) */
+    lightbox.addEventListener('dragstart', function(e){ e.preventDefault(); });
+
+    /* ── 터치 스와이프 ── */
+    function lbFindTouch(list){
+      for(var i=0; i<list.length; i++){
+        if(list[i].identifier === lbTouchId) return list[i];
       }
+      return null;
+    }
+    function lbArmSuppress(){
+      lbSuppressClick = true;
+      clearTimeout(lbSuppressTimer);
+      lbSuppressTimer = setTimeout(function(){ lbSuppressClick = false; }, 500);
+    }
+    function lbCancelDrag(){
+      if(!lbDragging) return;
+      lbDragging = false; lbTouchId = null;
+      var wasX = (lbAxis === 'x'), dx = lbDx;
+      lbAxis = ''; lbDx = 0;
+      if(lbMovedFar) lbArmSuppress();
+      if(wasX && dx !== 0) lbSnapBack();
+    }
+
+    lightbox.addEventListener('touchstart', function(e){
+      if(lbBusy) return;
+      if(e.touches.length > 1){ lbCancelDrag(); return; }   // 멀티터치는 스와이프 취소
+      var t = e.changedTouches[0];
+      lbTouchId = t.identifier;
+      lbStartX = t.clientX; lbStartY = t.clientY;
+      lbDx = 0; lbAxis = ''; lbDragging = true; lbMovedFar = false;
+      lbMeasure();
+      lbTrack.classList.remove('lb-anim');
+    }, { passive: true });
+
+    lightbox.addEventListener('touchmove', function(e){
+      if(!lbDragging) return;
+      if(e.touches.length > 1){ lbCancelDrag(); return; }
+      var t = lbFindTouch(e.changedTouches);
+      if(!t) return;
+      var dx = t.clientX - lbStartX;
+      var dy = t.clientY - lbStartY;
+      if(!lbAxis){
+        if(Math.abs(dx) < 8 && Math.abs(dy) < 8) return;   // 가로 우세가 확정될 때까지 대기
+        lbAxis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+      }
+      if(lbAxis !== 'x') return;                            // 세로 제스처는 그대로 통과
+      if(e.cancelable) e.preventDefault();
+      if(Math.abs(dx) > 10) lbMovedFar = true;
+      if(galleryImgs.length < 2) dx = dx * 0.25;            // 1장뿐이면 고무줄
+      lbDx = dx;
+      lbPlace(dx, false);
+    }, { passive: false });
+
+    lightbox.addEventListener('touchend', function(e){
+      if(!lbDragging) return;
+      if(!lbFindTouch(e.changedTouches)) return;
+      lbDragging = false; lbTouchId = null;
+      var dx = lbDx, axis = lbAxis;
+      lbDx = 0; lbAxis = '';
+      if(lbMovedFar) lbArmSuppress();
+      if(axis !== 'x') return;
+      var thr = Math.min(lbW * 0.25, 50);
+      if(thr < 24) thr = 24;
+      if(Math.abs(dx) >= thr && galleryImgs.length > 1) lbGo(dx < 0 ? 1 : -1);
+      else if(dx !== 0) lbSnapBack();
+      else lbPlace(0, false);
+    }, { passive: true });
+
+    lightbox.addEventListener('touchcancel', function(){ lbCancelDrag(); }, { passive: true });
+
+    /* ── 키보드 (열려 있을 때만 가로챔) ── */
+    document.addEventListener('keydown', function(e){
+      if(!lightbox.classList.contains('open')) return;
+      var k = e.key;
+      if(k === 'Escape' || k === 'Esc' || e.keyCode === 27){ e.preventDefault(); lbCloseBox(); }
+      else if(k === 'ArrowLeft'  || e.keyCode === 37){ e.preventDefault(); lbGo(-1); }
+      else if(k === 'ArrowRight' || e.keyCode === 39){ e.preventDefault(); lbGo(1); }
+    });
+
+    /* 회전·리사이즈: 폭 재측정 후 재중앙 정렬 (애니메이션 중이면 폭만 갱신) */
+    window.addEventListener('resize', function(){
+      if(!lightbox.classList.contains('open')) return;
+      lbMeasure();
+      if(lbBusy || lbDragging) return;
+      lbTrack.classList.remove('lb-anim');
+      lbPlace(0, false);
     });
   }
 
